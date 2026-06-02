@@ -1,0 +1,23 @@
+---
+interface Props {
+  variant?: 'ink' | 'bone';
+  size?: number;
+  class?: string;
+}
+
+const { variant = 'ink', size = 24, class: className } = Astro.props;
+
+const src = variant === 'bone' ? '/skull-bone.svg' : '/skull-ink.svg';
+const alt = 'Signal & Noise skull mark';
+/* Natural aspect ratio of the Figma asset: 110 x 144 */
+const height = Math.round(size * (144 / 110));
+---
+
+<img
+  src={src}
+  alt={alt}
+  width={size}
+  height={height}
+  class={className}
+  style={`width:${size}px;height:${height}px;display:block;flex-shrink:0;`}
+/>

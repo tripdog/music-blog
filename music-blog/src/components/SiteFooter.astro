@@ -1,0 +1,165 @@
+---
+import SkullMark from './SkullMark.astro';
+---
+
+<footer class="site-footer">
+  <div class="site-footer__orange-bar"></div>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <SkullMark variant="bone" size={80} />
+      <div class="site-footer__brand-text">
+        <p class="site-footer__wordmark">
+          <span>signal</span><span class="site-footer__slash">/</span><span>noise</span>
+        </p>
+        <p class="site-footer__tagline">A music blog written from San Diego, CA. Est. 2026. No algorithms, no streams, no sponsored content.</p>
+      </div>
+    </div>
+
+    <nav class="site-footer__links" aria-label="Footer navigation">
+      <div class="site-footer__col">
+        <p class="site-footer__col-label">EXPLORE</p>
+        <a href="/#latest">Latest</a>
+        <a href="/#whats-here">Genres</a>
+        <a href="/about">About</a>
+      </div>
+      <div class="site-footer__col">
+        <p class="site-footer__col-label">FOLLOW</p>
+        <a href="/rss.xml">RSS</a>
+        <a href="#">Mastodon</a>
+        <a href="#">Bandcamp</a>
+      </div>
+    </nav>
+  </div>
+
+  <p class="site-footer__copy">&copy; 2026 SIGNAL &amp; NOISE</p>
+</footer>
+
+<style>
+  .site-footer {
+    background: #0a0a0a;
+    overflow: hidden;
+  }
+
+  .site-footer__orange-bar {
+    height: 8px;
+    background: #ff4d2e;
+  }
+
+  .site-footer__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 56px 80px 32px;
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+  }
+
+  .site-footer__brand {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    flex: 1;
+  }
+
+  .site-footer__brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .site-footer__wordmark {
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: #f5f5f0;
+    margin: 0;
+  }
+
+  .site-footer__slash {
+    color: #ff4d2e;
+  }
+
+  .site-footer__tagline {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #f5f5f0;
+    opacity: 0.7;
+    max-width: 500px;
+    margin: 0;
+  }
+
+  .site-footer__links {
+    display: flex;
+    gap: 80px;
+    flex-shrink: 0;
+  }
+
+  .site-footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .site-footer__col-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: #ff4d2e;
+    margin: 0 0 4px;
+  }
+
+  .site-footer__col a {
+    font-size: 14px;
+    font-weight: 400;
+    color: #f5f5f0;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .site-footer__col a:hover {
+    color: #ff4d2e;
+  }
+
+  .site-footer__copy {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 80px 32px;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    color: #f5f5f0;
+    opacity: 0.5;
+  }
+
+  @media (max-width: 1024px) {
+    .site-footer__inner {
+      flex-direction: column;
+      padding: 48px 40px 32px;
+    }
+
+    .site-footer__copy {
+      padding: 0 40px 32px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .site-footer__inner {
+      padding: 40px 24px 24px;
+      gap: 32px;
+    }
+
+    .site-footer__brand {
+      flex-direction: column;
+    }
+
+    .site-footer__links {
+      gap: 40px;
+    }
+
+    .site-footer__copy {
+      padding: 0 24px 24px;
+    }
+  }
+</style>
