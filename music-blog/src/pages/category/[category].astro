@@ -1,0 +1,507 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Masthead from '../../components/Masthead.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+
+const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+  'goth':       "Writing about bands the goth scene claims, rejects, or argues about. Mostly post-punk dressed in black, but the boundaries get fuzzy and that's the fun.",
+  'deep-cuts':  "Overlooked records, underrated runs, and bands that deserved more than they got.",
+  'review':     "Full reviews. Scored on the skull scale.",
+  'live-notes': "Small rooms, loud bands, honest notes.",
+  'punk':       "Fast, loud, and still relevant.",
+  'reggae':     "Roots, dub, and everything downstream.",
+  'metal':      "Heavy music taken seriously.",
+  'other':      "Doesn't fit anywhere else. That's usually a good sign.",
+};
+
+const POSTS_PER_PAGE = 5;
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const categories = [
+    ...new Set(posts.map((p) => p.data.category).filter(Boolean)),
+  ] as string[];
+  return categories.map((cat) => ({
+    params: { category: cat.toLowerCase().replace(/\s+/g, '-') },
+    props: { categoryName: cat },
+  }));
+}
+
+interface Props {
+  categoryName: string;
+}
+
+const { category } = Astro.params;
+const { categoryName } = Astro.props;
+
+const allPosts = await getCollection('blog');
+
+const categoryPosts = allPosts
+  .filter((p) => p.data.category?.toLowerCase().replace(/\s+/g, '-') === category)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const allCategories = [
+  ...new Set(allPosts.map((p) => p.data.category).filter(Boolean)),
+] as string[];
+
+const otherCategories = allCategories.filter(
+  (c) => c.toLowerCase().replace(/\s+/g, '-') !== category
+);
+
+const description = CATEGORY_DESCRIPTIONS[category ?? ''] ?? '';
+const totalPages = Math.ceil(categoryPosts.length / POSTS_PER_PAGE);
+---
+
+<BaseLayout
+  title={`${categoryName} — Signal & Noise`}
+  description={description || `${categoryName} posts on Signal & Noise.`}
+>
+  <Masthead />
+
+  <main class="cat-page">
+
+    <!-- Hero -->
+    <section class="cat-hero">
+      <div class="cat-hero__inner">
+        <p class="cat-hero__breadcrumb">GENRES</p>
+        <h1 class="cat-hero__title">{categoryName.toUpperCase()}</h1>
+        <div class="cat-hero__rule"></div>
+
+        <div class="cat-hero__meta-row">
+          {description && (
+            <p class="cat-hero__description">{description}</p>
+          )}
+          <div class="cat-hero__count">
+            <span class="cat-hero__count-num">{categoryPosts.length}</span>
+            <span class="cat-hero__count-label">POSTS</span>
+          </div>
+        </div>
+
+        {otherCategories.length > 0 && (
+          <div class="cat-hero__other-genres">
+            <p class="cat-hero__other-label">OTHER GENRES</p>
+            <div class="cat-hero__pills">
+              {otherCategories.map((cat) => (
+                <a
+                  href={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`}
+                  class="genre-pill"
+                >
+                  {cat.toUpperCase()}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Post list -->
+    <section class="cat-posts">
+      <div class="cat-posts__inner">
+        <div class="cat-posts__header">
+          <span class="cat-posts__header-left">ALL POSTS &middot; NEWEST FIRST</span>
+          <span class="cat-posts__header-right">SORT &darr;</span>
+        </div>
+        <div class="cat-posts__top-rule"></div>
+
+        <div class="post-list" id="post-list">
+          {categoryPosts.map((post, i) => {
+            const wordCount = post.body?.split(/\s+/).filter(Boolean).length ?? 0;
+            const readTime = Math.max(1, Math.ceil(wordCount / 200));
+            const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            }).toUpperCase();
+            return (
+              <div class="post-row" data-post-index={i} style={i >= POSTS_PER_PAGE ? 'display:none' : ''}>
+                <span class="post-row__date">{formattedDate}</span>
+                <div class="post-row__main">
+                  <h3 class="post-row__title">
+                    <a href={`/blog/${post.id}`}>{post.data.title}</a>
+                  </h3>
+                  <p class="post-row__excerpt">{post.data.description}</p>
+                </div>
+                <div class="post-row__right">
+                  <span class="post-row__readtime">{readTime} MIN</span>
+                  <span class="post-row__arrow">&rarr;</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <div class="pagination__rule"></div>
+          <div class="pagination__controls">
+            <a
+              href="?page=2"
+              class="pagination__older"
+              id="older-btn"
+              style={totalPages <= 1 ? 'visibility:hidden' : ''}
+            >
+              &larr; OLDER POSTS
+            </a>
+            <span class="pagination__indicator" id="page-indicator">
+              PAGE 1 / {totalPages}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
+
+<script define:vars={{ POSTS_PER_PAGE, totalPages }}>
+  const params = new URLSearchParams(window.location.search);
+  const page = Math.max(1, Math.min(parseInt(params.get('page') || '1', 10), totalPages));
+
+  const rows = document.querySelectorAll('.post-row');
+  const start = (page - 1) * POSTS_PER_PAGE;
+  const end = page * POSTS_PER_PAGE;
+
+  rows.forEach((row, i) => {
+    row.style.display = i >= start && i < end ? '' : 'none';
+  });
+
+  const indicator = document.getElementById('page-indicator');
+  if (indicator) indicator.textContent = `PAGE ${page} / ${totalPages}`;
+
+  const olderBtn = document.getElementById('older-btn');
+  if (olderBtn) {
+    if (page < totalPages) {
+      olderBtn.setAttribute('href', `?page=${page + 1}`);
+      olderBtn.style.visibility = '';
+    } else {
+      olderBtn.style.visibility = 'hidden';
+    }
+  }
+</script>
+
+<style>
+  .cat-page {
+    background: var(--color-bg);
+  }
+
+  /* ---- Hero ---- */
+  .cat-hero {
+    background: var(--color-bg);
+  }
+
+  .cat-hero__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 48px 80px 56px;
+  }
+
+  .cat-hero__breadcrumb {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: #5a5a5a;
+    margin-bottom: 16px;
+  }
+
+  .cat-hero__title {
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--color-ink);
+    margin-bottom: 24px;
+  }
+
+  .cat-hero__title::after {
+    content: '.';
+    color: #ff4d2e;
+  }
+
+  .cat-hero__rule {
+    height: 8px;
+    background: var(--color-ink);
+    margin-bottom: 32px;
+  }
+
+  .cat-hero__meta-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 60px;
+    margin-bottom: 40px;
+  }
+
+  .cat-hero__description {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--color-ink);
+    max-width: 800px;
+    flex: 1;
+  }
+
+  .cat-hero__count {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .cat-hero__count-num {
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--color-ink);
+  }
+
+  .cat-hero__count-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+  }
+
+  .cat-hero__other-genres {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cat-hero__other-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+  }
+
+  .cat-hero__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .genre-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    padding: 0.4rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-align: center;
+    color: var(--color-ink);
+    background: var(--color-bg);
+    border: 2px solid var(--color-ink);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+
+  .genre-pill + .genre-pill {
+    margin-left: -2px;
+  }
+
+  .genre-pill:hover {
+    background: #ff4d2e;
+    color: #0a0a0a;
+    border-color: #ff4d2e;
+  }
+
+  /* ---- Post list ---- */
+  .cat-posts {
+    background: var(--color-bg);
+  }
+
+  .cat-posts__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 80px 80px;
+  }
+
+  .cat-posts__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--color-ink);
+  }
+
+  .cat-posts__header-right {
+    color: var(--color-muted);
+  }
+
+  .cat-posts__top-rule {
+    height: 4px;
+    background: var(--color-ink);
+    margin-bottom: 0;
+  }
+
+  /* ---- Post rows ---- */
+  .post-row {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: center;
+    gap: 32px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--color-ink);
+    opacity: 1;
+  }
+
+  .post-row__date {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #ff4d2e;
+    line-height: 1.4;
+  }
+
+  .post-row__main {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .post-row__title {
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-ink);
+  }
+
+  .post-row__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .post-row__title a:hover {
+    color: #ff4d2e;
+  }
+
+  .post-row__excerpt {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .post-row__right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .post-row__readtime {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--color-muted);
+    white-space: nowrap;
+  }
+
+  .post-row__arrow {
+    font-size: 24px;
+    color: #ff4d2e;
+    line-height: 1;
+  }
+
+  /* ---- Pagination ---- */
+  .pagination__rule {
+    height: 4px;
+    background: var(--color-ink);
+    margin-bottom: 24px;
+  }
+
+  .pagination__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .pagination__older {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: #fff;
+    background: #ff4d2e;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+
+  .pagination__older:hover {
+    background: #e0391c;
+    color: #fff;
+  }
+
+  .pagination__indicator {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--color-muted);
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 1024px) {
+    .cat-hero__inner,
+    .cat-posts__inner {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cat-hero__inner,
+    .cat-posts__inner {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    .cat-hero__meta-row {
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .cat-hero__count {
+      align-items: flex-start;
+      margin-left: 0;
+    }
+
+    .post-row {
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+      gap: 12px 16px;
+    }
+
+    .post-row__date {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .post-row__main {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .post-row__right {
+      grid-column: 2;
+      grid-row: 1 / 3;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+  }
+</style>

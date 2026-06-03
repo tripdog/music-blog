@@ -42,7 +42,7 @@ const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
             <p class="hero__genres-label">WHAT'S HERE</p>
             <div class="hero__genres-row">
               {GENRES.map((g) => (
-                <a href={`/genres#${g.toLowerCase().replace(/\s+/g, '-')}`} class="genre-pill">{g}</a>
+                <a href={`/category/${g.toLowerCase()}`} class="genre-pill">{g}</a>
               ))}
             </div>
           </div>
