@@ -1,20 +1,550 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
-import BlogPost from '../../layouts/BlogPost.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Masthead from '../../components/Masthead.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import PostCard from '../../components/PostCard.astro';
 
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
-	return posts.map((post) => ({
-		params: { slug: post.id },
-		props: post,
-	}));
+  const posts = await getCollection('blog');
+  return posts.map((entry) => ({
+    params: { slug: entry.id },
+    props: entry,
+  }));
 }
+
 type Props = CollectionEntry<'blog'>;
 
-const post = Astro.props;
-const { Content } = await render(post);
+const entry = Astro.props;
+const { Content } = await render(entry);
+
+const wordCount = entry.body?.split(/\s+/).filter(Boolean).length ?? 0;
+const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
+const formattedDate = entry.data.pubDate.toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+}).toUpperCase();
+
+const lede = entry.data.lede ?? entry.data.description;
+const rating = entry.data.rating;
+const verdict = entry.data.verdict;
+const floorRating = rating !== undefined ? Math.floor(rating) : 0;
+const fracRating = rating !== undefined ? rating % 1 : 0;
+
+const SKULL_HERO_W = 24;
+const SKULL_HERO_H = Math.round(SKULL_HERO_W * 144 / 110);
+const SKULL_VDT_W = 38;
+const SKULL_VDT_H = Math.round(SKULL_VDT_W * 144 / 110);
+
+const allPosts = await getCollection('blog');
+const related = allPosts
+  .filter((p) => p.id !== entry.id && p.data.category === entry.data.category)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
 ---
 
-<BlogPost {...post.data}>
-	<Content />
-</BlogPost>
+<BaseLayout title={`${entry.data.title} — Signal & Noise`} description={entry.data.description}>
+  <Masthead />
+
+  <!-- Hero: always dark -->
+  <section class="post-hero">
+    <div class="post-hero__inner">
+      <nav class="post-hero__breadcrumb" aria-label="Breadcrumb">
+        <a href="/#latest">LATEST</a>
+        {entry.data.category && (
+          <>
+            <span class="post-hero__sep">/</span>
+            <span>{entry.data.category.toUpperCase()}</span>
+          </>
+        )}
+      </nav>
+
+      {entry.data.category && (
+        <span class="post-hero__pill">{entry.data.category.toUpperCase()}</span>
+      )}
+
+      <h1 class="post-hero__title">{entry.data.title}</h1>
+      <p class="post-hero__lede">{lede}</p>
+
+      <div class="post-hero__rule"></div>
+
+      <div class="post-hero__byline">
+        <span class="post-hero__byline-left">
+          BY TOM PHILLIPS &middot; {formattedDate} &middot; {readTime} MIN READ
+        </span>
+        <button class="post-hero__share" id="share-btn" type="button">
+          SHARE / COPY LINK
+        </button>
+      </div>
+
+      {rating !== undefined && (
+        <div class="post-hero__skulls">
+          {Array.from({ length: 5 }, (_, i) => (
+            <img
+              src="/skull-bone.svg"
+              width={SKULL_HERO_W}
+              height={SKULL_HERO_H}
+              alt=""
+              style={i >= floorRating ? 'opacity: 0.18' : ''}
+            />
+          ))}
+          <span class="post-hero__rating">{rating.toFixed(2)} / 5</span>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Body: theme-responsive -->
+  <div class="post-body">
+    <div class="post-body__inner">
+      <div class="post-prose">
+        <Content />
+      </div>
+
+      {rating !== undefined && (
+        <div class="verdict">
+          <div class="verdict__divider"></div>
+          <p class="verdict__label">FINAL VERDICT</p>
+          <div class="verdict__row">
+            <div class="verdict__skulls">
+              {Array.from({ length: 5 }, (_, i) => {
+                const isFull = i < floorRating;
+                const isPartial = i === floorRating && fracRating > 0;
+                const isEmpty = !isFull && !isPartial;
+                return (
+                  <span class="verdict__skull-slot">
+                    {isPartial ? (
+                      <span
+                        class="verdict__skull-clip"
+                        style={`width: ${Math.round(fracRating * SKULL_VDT_W)}px; height: ${SKULL_VDT_H}px;`}
+                      >
+                        <img src="/skull-bone.svg" width={SKULL_VDT_W} height={SKULL_VDT_H} alt="" />
+                      </span>
+                    ) : (
+                      <img
+                        src="/skull-bone.svg"
+                        width={SKULL_VDT_W}
+                        height={SKULL_VDT_H}
+                        alt=""
+                        style={isEmpty ? 'opacity: 0.18' : ''}
+                      />
+                    )}
+                  </span>
+                );
+              })}
+            </div>
+            <span class="verdict__score">{rating.toFixed(2)} / 5</span>
+          </div>
+          {verdict && <p class="verdict__blurb">{verdict}</p>}
+        </div>
+      )}
+
+      <div class="author-bio">
+        <p class="author-bio__slash">/</p>
+        <div class="author-bio__rule"></div>
+        <p class="author-bio__label">WRITTEN BY</p>
+        <p class="author-bio__name">Tom Phillips</p>
+        <p class="author-bio__text">
+          Writes about music from San Diego. Has been collecting records since before that was a personality trait. Practices guitar daily and remains genuinely bad at it.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {related.length > 0 && (
+    <section class="keep-reading">
+      <div class="keep-reading__inner">
+        <h2 class="keep-reading__heading">keep reading.</h2>
+        <div class="keep-reading__rule"></div>
+        <div class="keep-reading__grid">
+          {related.map((post) => (
+            <PostCard
+              title={post.data.title}
+              description={post.data.description}
+              category={post.data.category ?? 'Post'}
+              date={post.data.pubDate}
+              slug={post.id}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <SiteFooter />
+</BaseLayout>
+
+<script>
+  document.getElementById('share-btn')?.addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const btn = document.getElementById('share-btn') as HTMLButtonElement;
+      if (btn) {
+        const original = btn.textContent;
+        btn.textContent = 'COPIED!';
+        setTimeout(() => { btn.textContent = original; }, 2000);
+      }
+    });
+  });
+</script>
+
+<style>
+  /* ---- Hero ---- */
+  .post-hero {
+    background: #0a0a0a;
+  }
+
+  .post-hero__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 50px 60px 64px;
+  }
+
+  .post-hero__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: #f5f5f0;
+    opacity: 0.5;
+    margin-bottom: 20px;
+  }
+
+  .post-hero__breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.15s, color 0.15s;
+  }
+
+  .post-hero__breadcrumb a:hover {
+    opacity: 1;
+    color: #ff4d2e;
+  }
+
+  .post-hero__sep {
+    opacity: 0.6;
+  }
+
+  .post-hero__pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.75rem;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: #ff4d2e;
+    border: 1.5px solid #ff4d2e;
+    margin-bottom: 24px;
+  }
+
+  .post-hero__title {
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: #ededed;
+    margin-bottom: 28px;
+    max-width: 1100px;
+  }
+
+  .post-hero__lede {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #ededed;
+    max-width: 960px;
+  }
+
+  .post-hero__rule {
+    height: 4px;
+    background: #ededed;
+    margin: 40px 0;
+  }
+
+  .post-hero__byline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .post-hero__byline-left {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: #f5f5f0;
+    opacity: 0.7;
+  }
+
+  .post-hero__share {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: #f5f5f0;
+    opacity: 0.7;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    transition: opacity 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+
+  .post-hero__share:hover {
+    opacity: 1;
+    color: #ff4d2e;
+  }
+
+  .post-hero__skulls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 32px;
+  }
+
+  .post-hero__rating {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ff4d2e;
+    margin-left: 4px;
+  }
+
+  /* ---- Body ---- */
+  .post-body {
+    background: var(--color-bg);
+  }
+
+  .post-body__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  .post-prose {
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: var(--color-ink);
+  }
+
+  .post-prose :global(p) {
+    margin-bottom: 1.5rem;
+  }
+
+  .post-prose :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .post-prose :global(h2) {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-ink);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-prose :global(h3) {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-ink);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-prose :global(blockquote) {
+    border-left: 8px solid #ff4d2e;
+    padding-left: 32px;
+    margin: 2rem 0;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+
+  .post-prose :global(a) {
+    color: #ff4d2e;
+    text-decoration: none;
+  }
+
+  .post-prose :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  .post-prose :global(strong) {
+    font-weight: 700;
+  }
+
+  /* ---- Verdict ---- */
+  .verdict {
+    margin-top: 56px;
+  }
+
+  .verdict__divider {
+    height: 1px;
+    background: var(--color-ink);
+    opacity: 0.12;
+    margin-bottom: 40px;
+  }
+
+  .verdict__label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: #ff4d2e;
+    margin-bottom: 16px;
+  }
+
+  .verdict__row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .verdict__skulls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .verdict__skull-slot {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .verdict__skull-clip {
+    display: inline-block;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .verdict__skull-clip img {
+    display: block;
+  }
+
+  .verdict__score {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ff4d2e;
+  }
+
+  .verdict__blurb {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #5a5a5a;
+  }
+
+  /* ---- Author bio ---- */
+  .author-bio {
+    margin-top: 72px;
+  }
+
+  .author-bio__slash {
+    font-size: 36px;
+    font-weight: 900;
+    color: #ff4d2e;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .author-bio__rule {
+    height: 4px;
+    background: var(--color-ink);
+    margin-bottom: 24px;
+  }
+
+  .author-bio__label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+    margin-bottom: 8px;
+  }
+
+  .author-bio__name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-ink);
+    margin-bottom: 12px;
+  }
+
+  .author-bio__text {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-ink);
+    opacity: 0.8;
+  }
+
+  /* ---- Keep reading ---- */
+  .keep-reading {
+    background: #0a0a0a;
+  }
+
+  .keep-reading__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 64px 60px 80px;
+  }
+
+  .keep-reading__heading {
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: #ededed;
+    margin-bottom: 16px;
+  }
+
+  .keep-reading__rule {
+    height: 4px;
+    background: #ededed;
+    margin-bottom: 32px;
+  }
+
+  .keep-reading__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 1024px) {
+    .post-hero__inner,
+    .keep-reading__inner {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .post-hero__inner {
+      padding: 32px 24px 48px;
+    }
+
+    .post-hero__byline {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .keep-reading__inner {
+      padding: 48px 24px 64px;
+    }
+
+    .keep-reading__heading {
+      font-size: 36px;
+    }
+
+    .keep-reading__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
