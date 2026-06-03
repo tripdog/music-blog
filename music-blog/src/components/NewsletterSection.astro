@@ -7,7 +7,7 @@
       <h2 class="newsletter__heading">subscribe.</h2>
       <p class="newsletter__body">Every two weeks. New writing, a few recommendations, no algorithms.</p>
     </div>
-    <form class="newsletter__form" action="#" method="post">
+    <form class="newsletter__form">
       <input
         class="newsletter__input"
         type="email"
@@ -20,6 +20,14 @@
     </form>
   </div>
 </section>
+
+<script>
+  const form = document.querySelector('.newsletter__form') as HTMLFormElement;
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    console.log('Subscribe clicked — MailChimp integration coming');
+  });
+</script>
 
 <style>
   .newsletter {

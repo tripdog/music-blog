@@ -22,19 +22,43 @@ import SkullMark from './SkullMark.astro';
         aria-label="Toggle light and dark mode"
         title="Toggle theme"
       >
-        <span class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true">&#9788;</span>
-        <span class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true">&#9790;</span>
+        <span class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.5 12.5A7.5 7.5 0 1 1 7.5 2.5a5.5 5.5 0 0 0 10 10z"/>
+          </svg>
+        </span>
+        <span class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="10" cy="10" r="4"/>
+            <line x1="10" y1="1" x2="10" y2="3"/>
+            <line x1="10" y1="17" x2="10" y2="19"/>
+            <line x1="1" y1="10" x2="3" y2="10"/>
+            <line x1="17" y1="10" x2="19" y2="10"/>
+            <line x1="3.22" y1="3.22" x2="4.64" y2="4.64"/>
+            <line x1="15.36" y1="15.36" x2="16.78" y2="16.78"/>
+            <line x1="3.22" y1="16.78" x2="4.64" y2="15.36"/>
+            <line x1="15.36" y1="4.64" x2="16.78" y2="3.22"/>
+          </svg>
+        </span>
       </button>
 
-      <button class="hamburger" id="hamburger" aria-label="Open navigation menu" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
+      <button
+        class="nav-toggle"
+        id="nav-toggle"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+      >
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="2" y1="6" x2="20" y2="6"/>
+          <line x1="2" y1="11" x2="20" y2="11"/>
+          <line x1="2" y1="16" x2="20" y2="16"/>
+        </svg>
       </button>
     </div>
   </div>
 
-  <nav class="masthead__mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden>
+  <nav class="masthead__mobile-nav" id="nav-menu" aria-label="Mobile navigation">
     <a href="/#latest">LATEST</a>
     <a href="/#whats-here">GENRES</a>
     <a href="/about">ABOUT</a>
@@ -42,21 +66,27 @@ import SkullMark from './SkullMark.astro';
 </header>
 
 <script>
-  const toggle = document.getElementById('theme-toggle') as HTMLButtonElement;
-  const hamburger = document.getElementById('hamburger') as HTMLButtonElement;
-  const mobileNav = document.getElementById('mobile-nav') as HTMLElement;
+  const themeToggle = document.getElementById('theme-toggle') as HTMLButtonElement;
+  const navToggle = document.getElementById('nav-toggle') as HTMLButtonElement;
+  const navMenu = document.getElementById('nav-menu') as HTMLElement;
 
-  toggle?.addEventListener('click', () => {
+  themeToggle?.addEventListener('click', () => {
     const current = document.documentElement.getAttribute('data-theme') || 'light';
     const next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('sn-theme', next);
   });
 
-  hamburger?.addEventListener('click', () => {
-    const isOpen = !mobileNav.hidden;
-    mobileNav.hidden = isOpen;
-    hamburger.setAttribute('aria-expanded', String(!isOpen));
+  navToggle?.addEventListener('click', () => {
+    const isOpen = navMenu.classList.toggle('nav-open');
+    navToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  navMenu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      navMenu.classList.remove('nav-open');
+      navToggle?.setAttribute('aria-expanded', 'false');
+    });
   });
 </script>
 
@@ -125,7 +155,6 @@ import SkullMark from './SkullMark.astro';
     border: none;
     cursor: pointer;
     color: #f5f5f0;
-    font-size: 18px;
     line-height: 1;
     padding: 4px;
     display: flex;
@@ -137,6 +166,11 @@ import SkullMark from './SkullMark.astro';
     color: #ff4d2e;
   }
 
+  .theme-toggle__icon {
+    display: flex;
+    align-items: center;
+  }
+
   .theme-toggle__icon--dark {
     display: none;
   }
@@ -146,38 +180,36 @@ import SkullMark from './SkullMark.astro';
   }
 
   :global([data-theme="dark"]) .theme-toggle__icon--dark {
-    display: inline;
+    display: flex;
   }
 
-  .hamburger {
+  .nav-toggle {
     display: none;
-    flex-direction: column;
-    gap: 5px;
+    align-items: center;
+    justify-content: center;
     background: none;
     border: none;
     cursor: pointer;
     padding: 4px;
+    color: #f5f5f0;
+    transition: color 0.15s;
   }
 
-  .hamburger span {
-    display: block;
-    width: 22px;
-    height: 2px;
-    background: #f5f5f0;
-    transition: background 0.15s;
-  }
-
-  .hamburger:hover span {
-    background: #ff4d2e;
+  .nav-toggle:hover {
+    color: #ff4d2e;
   }
 
   .masthead__mobile-nav {
-    display: flex;
+    display: none;
     flex-direction: column;
     background: #0a0a0a;
     border-top: 1px solid #222;
     padding: 16px 24px;
     gap: 16px;
+  }
+
+  .masthead__mobile-nav.nav-open {
+    display: flex;
   }
 
   .masthead__mobile-nav a {
@@ -201,7 +233,7 @@ import SkullMark from './SkullMark.astro';
       display: none;
     }
 
-    .hamburger {
+    .nav-toggle {
       display: flex;
     }
   }
