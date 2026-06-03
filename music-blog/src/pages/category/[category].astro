@@ -99,56 +99,65 @@ const totalPages = Math.ceil(categoryPosts.length / POSTS_PER_PAGE);
     <!-- Post list -->
     <section class="cat-posts">
       <div class="cat-posts__inner">
-        <div class="cat-posts__header">
-          <span class="cat-posts__header-left">ALL POSTS &middot; NEWEST FIRST</span>
-          <span class="cat-posts__header-right">SORT &darr;</span>
-        </div>
-        <div class="cat-posts__top-rule"></div>
-
-        <div class="post-list" id="post-list">
-          {categoryPosts.map((post, i) => {
-            const wordCount = post.body?.split(/\s+/).filter(Boolean).length ?? 0;
-            const readTime = Math.max(1, Math.ceil(wordCount / 200));
-            const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            }).toUpperCase();
-            return (
-              <div class="post-row" data-post-index={i} style={i >= POSTS_PER_PAGE ? 'display:none' : ''}>
-                <span class="post-row__date">{formattedDate}</span>
-                <div class="post-row__main">
-                  <h3 class="post-row__title">
-                    <a href={`/blog/${post.id}`}>{post.data.title}</a>
-                  </h3>
-                  <p class="post-row__excerpt">{post.data.description}</p>
-                </div>
-                <div class="post-row__right">
-                  <span class="post-row__readtime">{readTime} MIN</span>
-                  <span class="post-row__arrow">&rarr;</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination">
-          <div class="pagination__rule"></div>
-          <div class="pagination__controls">
-            <a
-              href="?page=2"
-              class="pagination__older"
-              id="older-btn"
-              style={totalPages <= 1 ? 'visibility:hidden' : ''}
-            >
-              &larr; OLDER POSTS
-            </a>
-            <span class="pagination__indicator" id="page-indicator">
-              PAGE 1 / {totalPages}
-            </span>
+        {categoryPosts.length === 0 ? (
+          <div class="cat-empty">
+            <img src="/skull-bone.svg" width="40" height="52" alt="" class="cat-empty__skull" />
+            <p class="cat-empty__heading">NO POSTS YET.</p>
+            <p class="cat-empty__sub">Check back soon.</p>
           </div>
-        </div>
+        ) : (
+          <>
+            <div class="cat-posts__header">
+              <span class="cat-posts__header-left">ALL POSTS &middot; NEWEST FIRST</span>
+              <span class="cat-posts__header-right">SORT &darr;</span>
+            </div>
+            <div class="cat-posts__top-rule"></div>
+
+            <div class="post-list" id="post-list">
+              {categoryPosts.map((post, i) => {
+                const wordCount = post.body?.split(/\s+/).filter(Boolean).length ?? 0;
+                const readTime = Math.max(1, Math.ceil(wordCount / 200));
+                const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                }).toUpperCase();
+                return (
+                  <div class="post-row" data-post-index={i} style={i >= POSTS_PER_PAGE ? 'display:none' : ''}>
+                    <span class="post-row__date">{formattedDate}</span>
+                    <div class="post-row__main">
+                      <h3 class="post-row__title">
+                        <a href={`/blog/${post.id}`}>{post.data.title}</a>
+                      </h3>
+                      <p class="post-row__excerpt">{post.data.description}</p>
+                    </div>
+                    <div class="post-row__right">
+                      <span class="post-row__readtime">{readTime} MIN</span>
+                      <span class="post-row__arrow">&rarr;</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div class="pagination">
+              <div class="pagination__rule"></div>
+              <div class="pagination__controls">
+                <a
+                  href="?page=2"
+                  class="pagination__older"
+                  id="older-btn"
+                  style={totalPages <= 1 ? 'visibility:hidden' : ''}
+                >
+                  &larr; OLDER POSTS
+                </a>
+                <span class="pagination__indicator" id="page-indicator">
+                  PAGE 1 / {totalPages}
+                </span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </section>
   </main>
@@ -451,6 +460,32 @@ const totalPages = Math.ceil(categoryPosts.length / POSTS_PER_PAGE);
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.15em;
+    color: var(--color-muted);
+  }
+
+  /* ---- Empty state ---- */
+  .cat-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 0 100px;
+    gap: 16px;
+  }
+
+  .cat-empty__skull {
+    opacity: 0.3;
+  }
+
+  .cat-empty__heading {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+  }
+
+  .cat-empty__sub {
+    font-size: 15px;
+    font-weight: 400;
     color: var(--color-muted);
   }
 
