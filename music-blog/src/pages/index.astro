@@ -266,11 +266,18 @@ const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
   }
 
   /* ---- Responsive ---- */
-  @media (max-width: 1024px) {
+
+  /* Tablet (640–1023px) */
+  @media (min-width: 640px) and (max-width: 1023px) {
     .hero__inner,
     .latest__inner {
       padding-left: 40px;
       padding-right: 40px;
+    }
+
+    .hero__wordmark {
+      font-size: clamp(5rem, 12vw, 10rem);
+      white-space: normal;
     }
 
     .post-grid {
@@ -278,7 +285,8 @@ const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
     }
   }
 
-  @media (max-width: 768px) {
+  /* Mobile (≤639px) */
+  @media (max-width: 639px) {
     .hero__inner,
     .latest__inner {
       padding-left: 24px;
@@ -286,6 +294,7 @@ const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
     }
 
     .hero__wordmark {
+      font-size: clamp(3rem, 15vw, 7rem);
       white-space: normal;
     }
 
@@ -295,11 +304,11 @@ const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
     }
 
     .hero__tagline {
-      font-size: 18px;
+      font-size: clamp(1rem, 4vw, 1.4rem);
     }
 
     .latest__heading {
-      font-size: 48px;
+      font-size: clamp(2rem, 8vw, 4rem);
     }
 
     .featured-post {

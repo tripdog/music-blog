@@ -516,23 +516,67 @@ const related = allPosts
   }
 
   /* ---- Responsive ---- */
-  @media (max-width: 1024px) {
+
+  /* Tablet (640–1023px) */
+  @media (min-width: 640px) and (max-width: 1023px) {
     .post-hero__inner,
     .keep-reading__inner {
       padding-left: 40px;
       padding-right: 40px;
     }
+
+    .post-body__inner {
+      max-width: 600px;
+    }
+
+    .keep-reading__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
-  @media (max-width: 768px) {
+  /* Mobile (≤639px) */
+  @media (max-width: 639px) {
     .post-hero__inner {
       padding: 32px 24px 48px;
+    }
+
+    .post-hero__title {
+      font-size: clamp(2rem, 7vw, 5.5rem);
+    }
+
+    .post-hero__lede {
+      font-size: clamp(1rem, 3vw, 1.375rem);
     }
 
     .post-hero__byline {
       flex-direction: column;
       align-items: flex-start;
       gap: 8px;
+    }
+
+    .post-hero__skulls img {
+      width: 20px;
+      height: auto;
+    }
+
+    .post-body__inner {
+      max-width: 100%;
+      padding: 40px 24px 60px;
+    }
+
+    .post-prose {
+      font-size: 17px;
+    }
+
+    .post-prose :global(blockquote) {
+      font-size: clamp(1.2rem, 4vw, 2.25rem);
+      padding-left: 20px;
+    }
+
+    .verdict__skulls img,
+    .verdict__skull-clip img {
+      width: 32px;
+      height: auto;
     }
 
     .keep-reading__inner {

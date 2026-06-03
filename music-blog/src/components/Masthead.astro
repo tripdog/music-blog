@@ -228,7 +228,19 @@ import SkullMark from './SkullMark.astro';
     color: #ff4d2e;
   }
 
-  @media (max-width: 768px) {
+  /* Tablet (640–1023px) */
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .masthead__inner {
+      padding: 0 40px;
+    }
+
+    .masthead__nav a {
+      font-size: 11px;
+    }
+  }
+
+  /* Mobile (≤639px) */
+  @media (max-width: 639px) {
     .masthead__inner {
       padding: 0 24px;
     }
@@ -239,6 +251,16 @@ import SkullMark from './SkullMark.astro';
 
     .nav-toggle {
       display: flex;
+    }
+
+    .masthead__wordmark {
+      font-size: 11px;
+    }
+
+    .masthead__mobile-nav a {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
     }
   }
 </style>

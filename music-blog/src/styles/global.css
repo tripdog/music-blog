@@ -1,5 +1,10 @@
 /* Signal & Noise — design tokens + base resets */
 
+/* ---------- Breakpoints (reference) ---------- */
+/* Mobile:  max-width: 639px  */
+/* Tablet:  640px – 1023px    */
+/* Desktop: 1024px+           */
+
 /* ---------- Google Fonts ---------- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap');
 
@@ -50,6 +55,11 @@ body {
   background-color: var(--color-bg);
   color: var(--color-ink);
   line-height: 1.5;
+}
+
+html,
+body {
+  overflow-x: hidden;
 }
 
 img {

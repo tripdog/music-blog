@@ -489,20 +489,29 @@ const totalPages = Math.ceil(categoryPosts.length / POSTS_PER_PAGE);
     color: var(--color-muted);
   }
 
-  /* ---- Responsive ---- */
-  @media (max-width: 1024px) {
+  /* Tablet (640–1023px) */
+  @media (min-width: 640px) and (max-width: 1023px) {
     .cat-hero__inner,
     .cat-posts__inner {
       padding-left: 40px;
       padding-right: 40px;
     }
+
+    .cat-hero__title {
+      font-size: clamp(4rem, 8vw, 8rem);
+    }
   }
 
-  @media (max-width: 768px) {
+  /* Mobile (≤639px) */
+  @media (max-width: 639px) {
     .cat-hero__inner,
     .cat-posts__inner {
       padding-left: 24px;
       padding-right: 24px;
+    }
+
+    .cat-hero__title {
+      font-size: clamp(3rem, 12vw, 8rem);
     }
 
     .cat-hero__meta-row {

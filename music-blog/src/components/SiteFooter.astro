@@ -133,19 +133,28 @@ import SkullMark from './SkullMark.astro';
     opacity: 0.5;
   }
 
-  @media (max-width: 1024px) {
+  /* Tablet (640–1023px) */
+  @media (min-width: 640px) and (max-width: 1023px) {
     .site-footer__inner {
-      flex-direction: column;
+      flex-direction: row;
+      align-items: flex-start;
       padding: 48px 40px 32px;
+      gap: 40px;
     }
 
     .site-footer__copy {
       padding: 0 40px 32px;
     }
+
+    .site-footer__links {
+      gap: 40px;
+    }
   }
 
-  @media (max-width: 768px) {
+  /* Mobile (≤639px) */
+  @media (max-width: 639px) {
     .site-footer__inner {
+      flex-direction: column;
       padding: 40px 24px 24px;
       gap: 32px;
     }
@@ -155,11 +164,14 @@ import SkullMark from './SkullMark.astro';
     }
 
     .site-footer__links {
-      gap: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
     }
 
     .site-footer__copy {
       padding: 0 24px 24px;
+      text-align: center;
     }
   }
 </style>
