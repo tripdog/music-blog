@@ -97,9 +97,13 @@ const isHome = Astro.url.pathname === '/';
       });
     });
   }
+function setupToggles() {
+  initTheme();
+  initNavToggle();
+}
 
-  document.addEventListener('astro:page-load', initTheme);
-  document.addEventListener('astro:page-load', initNavToggle);
+document.addEventListener('astro:page-load', setupToggles);
+setupToggles();
 </script>
 
 <style>
