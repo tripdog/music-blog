@@ -34,9 +34,9 @@ const verdict = entry.data.verdict;
 const floorRating = rating !== undefined ? Math.floor(rating) : 0;
 const fracRating = rating !== undefined ? rating % 1 : 0;
 
-const SKULL_HERO_W = 24;
+const SKULL_HERO_W = 38;
 const SKULL_HERO_H = Math.round(SKULL_HERO_W * 144 / 110);
-const SKULL_VDT_W = 38;
+const SKULL_VDT_W = 44;
 const SKULL_VDT_H = Math.round(SKULL_VDT_W * 144 / 110);
 
 const allPosts = await getCollection('blog');
@@ -83,15 +83,24 @@ const related = allPosts
 
         {rating !== undefined && (
           <div class="post-hero__skulls">
-            {Array.from({ length: 5 }, (_, i) => (
-              <img
-                src="/skull-bone.svg"
-                width={SKULL_HERO_W}
-                height={SKULL_HERO_H}
-                alt=""
-                style={i >= floorRating ? 'opacity: 0.18' : ''}
-              />
-            ))}
+            {Array.from({ length: 5 }, (_, i) => {
+              const isFull = i < floorRating;
+              const isPartial = i === floorRating && fracRating > 0;
+              const isEmpty = !isFull && !isPartial;
+              const wrapWidth = isPartial ? Math.round(fracRating * SKULL_HERO_W) : SKULL_HERO_W;
+              return (
+                <span class="skull-wrap" style={`width: ${wrapWidth}px; overflow: hidden; display: inline-block; vertical-align: middle;`}>
+                  <img
+                    src="/skull-bone.svg"
+                    class="skull-icon"
+                    width={SKULL_HERO_W}
+                    height={SKULL_HERO_H}
+                    alt=""
+                    style={isEmpty ? 'opacity: 0.15' : ''}
+                  />
+                </span>
+              );
+            })}
             <span class="post-hero__rating">{rating.toFixed(2)} / 5</span>
           </div>
         )}
@@ -128,24 +137,17 @@ const related = allPosts
                 const isFull = i < floorRating;
                 const isPartial = i === floorRating && fracRating > 0;
                 const isEmpty = !isFull && !isPartial;
+                const wrapWidth = isPartial ? Math.round(fracRating * SKULL_VDT_W) : SKULL_VDT_W;
                 return (
-                  <span class="verdict__skull-slot">
-                    {isPartial ? (
-                      <span
-                        class="verdict__skull-clip"
-                        style={`width: ${Math.round(fracRating * SKULL_VDT_W)}px; height: ${SKULL_VDT_H}px;`}
-                      >
-                        <img src="/skull-bone.svg" width={SKULL_VDT_W} height={SKULL_VDT_H} alt="" />
-                      </span>
-                    ) : (
-                      <img
-                        src="/skull-bone.svg"
-                        width={SKULL_VDT_W}
-                        height={SKULL_VDT_H}
-                        alt=""
-                        style={isEmpty ? 'opacity: 0.18' : ''}
-                      />
-                    )}
+                  <span class="skull-wrap" style={`width: ${wrapWidth}px; overflow: hidden; display: inline-block; vertical-align: middle;`}>
+                    <img
+                      src="/skull-bone.svg"
+                      class="skull-icon"
+                      width={SKULL_VDT_W}
+                      height={SKULL_VDT_H}
+                      alt=""
+                      style={isEmpty ? 'opacity: 0.15' : ''}
+                    />
                   </span>
                 );
               })}
@@ -207,13 +209,11 @@ const related = allPosts
 <style>
   /* ---- Hero ---- */
   .post-hero {
-    background: #0a0a0a;
+    background: var(--color-bg);
   }
 
   .post-hero__inner {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 50px 60px 64px;
+    padding: 50px 60px 64px 80px;
     display: block;
   }
 
@@ -247,24 +247,22 @@ const related = allPosts
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.15em;
-    color: #f5f5f0;
-    opacity: 0.5;
+    color: var(--color-muted);
     margin-bottom: 20px;
   }
 
   .post-hero__breadcrumb a {
     color: inherit;
     text-decoration: none;
-    transition: opacity 0.15s, color 0.15s;
+    transition: color 0.15s;
   }
 
   .post-hero__breadcrumb a:hover {
-    opacity: 1;
     color: #ff4d2e;
   }
 
   .post-hero__sep {
-    opacity: 0.6;
+    opacity: 0.5;
   }
 
   .post-hero__pill {
@@ -280,26 +278,27 @@ const related = allPosts
   }
 
   .post-hero__title {
-    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-size: clamp(2.5rem, 6vw, 5rem);
     font-weight: 900;
     line-height: 0.95;
     letter-spacing: -0.04em;
-    color: #ededed;
+    color: var(--color-ink);
     margin-bottom: 28px;
-    max-width: 1100px;
+    max-width: 900px;
   }
 
   .post-hero__lede {
     font-size: 22px;
     font-weight: 600;
     line-height: 1.4;
-    color: #ededed;
-    max-width: 960px;
+    color: var(--color-ink);
+    opacity: 0.85;
+    max-width: 700px;
   }
 
   .post-hero__rule {
     height: 4px;
-    background: #ededed;
+    background: var(--color-ink);
     margin: 40px 0;
   }
 
@@ -314,27 +313,24 @@ const related = allPosts
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.15em;
-    color: #f5f5f0;
-    opacity: 0.7;
+    color: var(--color-muted);
   }
 
   .post-hero__share {
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.15em;
-    color: #f5f5f0;
-    opacity: 0.7;
+    color: var(--color-muted);
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
     font-family: inherit;
-    transition: opacity 0.15s, color 0.15s;
+    transition: color 0.15s;
     white-space: nowrap;
   }
 
   .post-hero__share:hover {
-    opacity: 1;
     color: #ff4d2e;
   }
 
@@ -452,19 +448,13 @@ const related = allPosts
     gap: 4px;
   }
 
-  .verdict__skull-slot {
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .verdict__skull-clip {
-    display: inline-block;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .verdict__skull-clip img {
+  .skull-icon {
+    filter: invert(0);
     display: block;
+  }
+
+  :global([data-theme="dark"]) .skull-icon {
+    filter: invert(1);
   }
 
   .verdict__score {
@@ -559,7 +549,11 @@ const related = allPosts
 
   /* Tablet (640–1023px) */
   @media (min-width: 640px) and (max-width: 1023px) {
-    .post-hero__inner,
+    .post-hero__inner {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+
     .keep-reading__inner {
       padding-left: 40px;
       padding-right: 40px;
@@ -582,7 +576,7 @@ const related = allPosts
   /* Mobile (≤639px) */
   @media (max-width: 639px) {
     .post-hero__inner {
-      padding: 32px 24px 48px;
+      padding: 32px 24px 48px 24px;
     }
 
     .post-hero__inner--with-art {
@@ -614,8 +608,8 @@ const related = allPosts
       gap: 8px;
     }
 
-    .post-hero__skulls img {
-      width: 20px;
+    .post-hero__skulls .skull-icon {
+      width: 28px;
       height: auto;
     }
 
@@ -638,8 +632,7 @@ const related = allPosts
       padding-left: 20px;
     }
 
-    .verdict__skulls img,
-    .verdict__skull-clip img {
+    .verdict__skulls .skull-icon {
       width: 32px;
       height: auto;
     }
