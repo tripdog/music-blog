@@ -1,10 +1,11 @@
 ---
 import SkullMark from './SkullMark.astro';
+const isHome = Astro.url.pathname === '/';
 ---
 
 <header class="masthead">
   <div class="masthead__inner">
-    <a href="/" class="masthead__brand" aria-label="Signal and Noise home">
+    <a href="/" class="masthead__brand" aria-label="Signal and Noise home" transition:name={isHome ? undefined : "site-logo"}>
       <SkullMark variant="bone" size={24} />
       <span class="masthead__wordmark">SIGNAL &amp; NOISE</span>
     </a>

@@ -1,6 +1,7 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -14,16 +15,21 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
 <html lang="en">
   <head>
     <BaseHead title={title} description={description} />
+    <ClientRouter />
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem('sn-theme');
+        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', stored || preferred);
+      })();
+      document.addEventListener('astro:after-swap', () => {
+        const stored = localStorage.getItem('sn-theme');
+        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', stored || preferred);
+      });
+    </script>
   </head>
   <body>
     <slot />
   </body>
 </html>
-
-<script is:inline>
-  (function () {
-    const stored = localStorage.getItem('sn-theme');
-    const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', stored || preferred);
-  })();
-</script>

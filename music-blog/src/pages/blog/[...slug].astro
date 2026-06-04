@@ -65,14 +65,14 @@ const related = allPosts
         <span class="post-hero__pill">{entry.data.category.toUpperCase()}</span>
       )}
 
-      <h1 class="post-hero__title">{entry.data.title}</h1>
+      <h1 class="post-hero__title" transition:name={"post-title-" + entry.id}>{entry.data.title}</h1>
       <p class="post-hero__lede">{lede}</p>
 
       <div class="post-hero__rule"></div>
 
       <div class="post-hero__byline">
         <span class="post-hero__byline-left">
-          BY TOM PHILLIPS &middot; {formattedDate} &middot; {readTime} MIN READ
+          BY TOM PHILLIPS &middot; <span transition:name={"post-date-" + entry.id}>{formattedDate}</span> &middot; {readTime} MIN READ
         </span>
         <button class="post-hero__share" id="share-btn" type="button">
           SHARE / COPY LINK

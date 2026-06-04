@@ -21,9 +21,9 @@ const formatted = date.toLocaleDateString('en-US', {
   <div class="post-card__body">
     <div class="post-card__meta">
       <span class="post-card__category">{category.toUpperCase()}</span>
-      <span class="post-card__date">{formatted}</span>
+      <span class="post-card__date" transition:name={"post-date-" + slug}>{formatted}</span>
     </div>
-    <h3 class="post-card__title">
+    <h3 class="post-card__title" transition:name={"post-title-" + slug}>
       <a href={`/blog/${slug}`}>{title}</a>
     </h3>
     <p class="post-card__excerpt">{description}</p>
