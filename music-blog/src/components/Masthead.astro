@@ -183,17 +183,17 @@ const isHome = Astro.url.pathname === '/';
     align-items: center;
   }
 
-  .theme-toggle__icon--dark {
-    display: none;
-  }
+ .theme-toggle__icon--light {
+  display: none;
+}
 
-  :global([data-theme="dark"]) .theme-toggle__icon--light {
-    display: none;
-  }
+:global([data-theme="dark"]) .theme-toggle__icon--light {
+  display: flex;
+}
 
-  :global([data-theme="dark"]) .theme-toggle__icon--dark {
-    display: flex;
-  }
+:global([data-theme="dark"]) .theme-toggle__icon--dark {
+  display: none;
+}
 
   .nav-toggle {
     display: none;
