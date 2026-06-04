@@ -67,39 +67,43 @@ const isHome = Astro.url.pathname === '/';
 </header>
 
 <script>
-  function initTheme(){
-    var toggle=document.getElementById('theme-toggle');
-    if(!toggle)return;
-    toggle.addEventListener('click',function(){
-      var cur=document.documentElement.getAttribute('data-theme')||'light';
-      var next=cur==='dark'?'light':'dark';
-      document.documentElement.setAttribute('data-theme',next);
-      localStorage.setItem('sn-theme',next);
+  function initTheme() {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+    const newToggle = toggle.cloneNode(true);
+    toggle.parentNode.replaceChild(newToggle, toggle);
+    newToggle.addEventListener('click', function () {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('sn-theme', next);
     });
   }
 
   function initNavToggle() {
     const navToggle = document.getElementById('nav-toggle') as HTMLButtonElement;
     const navMenu = document.getElementById('nav-menu') as HTMLElement;
-
-    navToggle?.addEventListener('click', () => {
+    if (!navToggle || !navMenu) return;
+    const newToggle = navToggle.cloneNode(true) as HTMLButtonElement;
+    navToggle.parentNode!.replaceChild(newToggle, navToggle);
+    newToggle.addEventListener('click', () => {
       const isOpen = navMenu.classList.toggle('nav-open');
-      navToggle.setAttribute('aria-expanded', String(isOpen));
+      newToggle.setAttribute('aria-expanded', String(isOpen));
     });
-
-    navMenu?.querySelectorAll('a').forEach((link) => {
+    navMenu.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
         navMenu.classList.remove('nav-open');
-        navToggle?.setAttribute('aria-expanded', 'false');
+        newToggle.setAttribute('aria-expanded', 'false');
       });
     });
   }
-
+function setupToggles() {
   initTheme();
   initNavToggle();
+}
 
-  document.addEventListener('astro:page-load', initTheme);
-  document.addEventListener('astro:page-load', initNavToggle);
+document.addEventListener('astro:page-load', setupToggles);
+setupToggles();
 </script>
 
 <style>
@@ -183,17 +187,17 @@ const isHome = Astro.url.pathname === '/';
     align-items: center;
   }
 
-  .theme-toggle__icon--dark {
-    display: none;
-  }
+ .theme-toggle__icon--light {
+  display: none;
+}
 
-  :global([data-theme="dark"]) .theme-toggle__icon--light {
-    display: none;
-  }
+:global([data-theme="dark"]) .theme-toggle__icon--light {
+  display: flex;
+}
 
-  :global([data-theme="dark"]) .theme-toggle__icon--dark {
-    display: flex;
-  }
+:global([data-theme="dark"]) .theme-toggle__icon--dark {
+  display: none;
+}
 
   .nav-toggle {
     display: none;
