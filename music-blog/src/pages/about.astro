@@ -2,59 +2,262 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Masthead from '../components/Masthead.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+
+const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
 ---
 
 <BaseLayout title="About — Signal & Noise" description="About Signal & Noise, a music blog by Tom Phillips.">
   <Masthead />
+
   <main class="about">
-    <div class="about__inner prose">
-      <h1>About.</h1>
-      <p>
-        Signal &amp; Noise is a music blog by Tom Phillips, written from San Diego, CA. The premise is
-        that there's still original music being made in genres people declared dead. Most algorithms
-        can't find it. This is a place where it gets written about.
-      </p>
-      <p>
-        The writing covers records (new and old), live shows, and whatever else seems worth the words.
-        The categories loosely follow the genres: punk, reggae, metal, goth, and a catch-all for
-        everything else. The bias is toward things that hold up over time and bands that never got
-        their fair hearing.
-      </p>
-      <p>
-        Published every two weeks or so. No ads, no sponsored posts, no algorithm chasing.
-        If something's good it gets written about. If it isn't, it doesn't.
-      </p>
-      <hr />
-      <p class="about__meta">Tom Phillips. San Diego. Est. 2026.</p>
+
+    <!-- 1. Hero -->
+    <section class="about-hero">
+      <div class="about__inner">
+        <p class="about__eyebrow">ABOUT</p>
+        <h1 class="about-hero__heading">
+          There's still original music being made<span class="dot">.</span>
+        </h1>
+        <div class="about-hero__rule"></div>
+        <p class="about-hero__sub">
+          In genres people declared dead. Most algorithms can't find it. This is where it gets written about.
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. Two-column split -->
+    <section class="about-split">
+      <div class="about__inner about-split__grid">
+        <div class="about-split__col">
+          <p class="about__eyebrow">THE WRITING</p>
+          <p class="about-split__body">Records (new and old), live shows, and whatever else seems worth the words. The bias runs toward things that hold up over time and bands that never got their fair hearing.</p>
+          <p class="about-split__body">No genre is off limits, but a few come up more than others (see below).</p>
+        </div>
+        <div class="about-split__col">
+          <p class="about__eyebrow">WHO'S BEHIND IT</p>
+          <p class="about-split__body">I'm Tom. I write this from San Diego, where I've been collecting records since before that was a personality trait.</p>
+          <p class="about-split__body">I practice guitar most days and remain genuinely bad at it, which keeps me honest about how hard the good stuff actually is.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Genre rail -->
+    <section class="about-genres">
+      <div class="about__inner">
+        <p class="about__eyebrow">WHAT YOU'LL FIND</p>
+        <div class="genre-rail">
+          {GENRES.map((g) => (
+            <a href={`/category/${g.toLowerCase()}`} class="genre-pill">{g}</a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Principles block -->
+    <section class="about-principles">
+      <div class="about-principles__inner">
+        <p class="about__eyebrow about__eyebrow--orange">HOW IT WORKS</p>
+        <h2 class="about-principles__heading">No ads. No sponsored posts. No algorithm chasing.</h2>
+        <p class="about-principles__body">Published every two weeks or so. If something's good it gets written about. If it isn't, it doesn't.</p>
+      </div>
+    </section>
+
+    <!-- 5. Colophon -->
+    <div class="about__inner about-colophon">
+      <div class="about-colophon__rule"></div>
+      <p class="about-colophon__text">TOM PHILLIPS. SAN DIEGO. EST. 2026.</p>
     </div>
+
   </main>
+
   <SiteFooter />
 </BaseLayout>
 
 <style>
+  /* ---- Shared ---- */
   .about {
     background: var(--color-bg);
-    min-height: 60vh;
   }
 
   .about__inner {
-    padding-top: 80px;
-    padding-bottom: 80px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding-left: 40px;
+    padding-right: 40px;
   }
 
-  .about__inner h1 {
-    font-size: 96px;
+  .about__eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .about__eyebrow--orange {
+    color: var(--color-orange);
+  }
+
+  /* ---- Hero ---- */
+  .about-hero {
+    padding-top: 64px;
+    padding-bottom: 56px;
+  }
+
+  .about-hero__heading {
+    font-size: clamp(56px, 9vw, 96px);
     font-weight: 900;
-    line-height: 0.9;
+    line-height: 0.98;
     letter-spacing: -0.05em;
-    margin: 0 0 48px;
+    color: var(--color-ink);
+    margin-bottom: 32px;
   }
 
-  .about__meta {
+  .dot {
+    color: var(--color-orange);
+  }
+
+  .about-hero__rule {
+    height: 8px;
+    background: var(--color-ink);
+    margin-bottom: 28px;
+  }
+
+  .about-hero__sub {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.35;
+    color: var(--color-ink);
+    max-width: 820px;
+  }
+
+  /* ---- Two-column split ---- */
+  .about-split {
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+
+  .about-split__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+  }
+
+  .about-split__body {
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--color-ink);
+    margin-bottom: 16px;
+  }
+
+  .about-split__body:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ---- Genre rail ---- */
+  .about-genres {
+    padding-top: 40px;
+    padding-bottom: 56px;
+  }
+
+  .genre-rail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .genre-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    padding: 0.4rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-align: center;
+    color: var(--color-ink);
+    background: var(--color-bg);
+    border: 2px solid var(--color-ink);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .genre-pill + .genre-pill {
+    margin-left: -2px;
+  }
+
+  .genre-pill:hover {
+    background: var(--color-orange);
+    color: var(--color-bg);
+    border-color: var(--color-orange);
+  }
+
+  /* ---- Principles (inverted) ---- */
+  .about-principles {
+    background: var(--color-ink);
+    margin-top: 16px;
+  }
+
+  .about-principles__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 44px 40px;
+  }
+
+  .about-principles__heading {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--color-surface);
+    margin-bottom: 20px;
+  }
+
+  .about-principles__body {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--color-surface);
+    opacity: 0.85;
+    max-width: 680px;
+  }
+
+  /* ---- Colophon ---- */
+  .about-colophon {
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+
+  .about-colophon__rule {
+    height: 3px;
+    background: var(--color-ink);
+    margin-bottom: 20px;
+  }
+
+  .about-colophon__text {
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.15em;
-    color: var(--color-muted);
     text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /* ---- Mobile (<=639px) ---- */
+  @media (max-width: 639px) {
+    .about__inner,
+    .about-principles__inner {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    .about-split__grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .about-hero__sub {
+      font-size: 19px;
+    }
   }
 </style>
