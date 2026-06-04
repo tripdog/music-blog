@@ -3,7 +3,6 @@ import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Masthead from '../../components/Masthead.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
-import PostCard from '../../components/PostCard.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -29,19 +28,23 @@ const formattedDate = entry.data.pubDate.toLocaleDateString('en-US', {
 
 const lede = entry.data.lede ?? entry.data.description;
 const albumArt = entry.data.albumArt;
+const heroImage = entry.data.heroImage;
 const rating = entry.data.rating;
 const verdict = entry.data.verdict;
+const category = entry.data.category;
+
 const floorRating = rating !== undefined ? Math.floor(rating) : 0;
 const fracRating = rating !== undefined ? rating % 1 : 0;
 
-const SKULL_HERO_W = 38;
+// Skull sizes from Figma measurements: teaser=24px+5px gap, verdict=38px+8px gap
+const SKULL_HERO_W = 24;
 const SKULL_HERO_H = Math.round(SKULL_HERO_W * 144 / 110);
-const SKULL_VDT_W = 44;
+const SKULL_VDT_W = 38;
 const SKULL_VDT_H = Math.round(SKULL_VDT_W * 144 / 110);
 
 const allPosts = await getCollection('blog');
 const related = allPosts
-  .filter((p) => p.id !== entry.id && p.data.category === entry.data.category)
+  .filter((p) => p.id !== entry.id)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 2);
 ---
@@ -49,143 +52,136 @@ const related = allPosts
 <BaseLayout title={`${entry.data.title} — Signal & Noise`} description={entry.data.description}>
   <Masthead />
 
-  <!-- Hero: always dark -->
-  <section class="post-hero">
-    <div class:list={["post-hero__inner", { "post-hero__inner--with-art": !!albumArt }]}>
-      <div class="post-hero__content">
-        <nav class="post-hero__breadcrumb" aria-label="Breadcrumb">
-          <a href="/#latest">LATEST</a>
-          {entry.data.category && (
-            <>
-              <span class="post-hero__sep">/</span>
-              <span>{entry.data.category.toUpperCase()}</span>
-            </>
-          )}
-        </nav>
+  {heroImage && (
+    <div class="post-hero-img">
+      <img src={heroImage} alt="" class="post-hero-img__img" />
+    </div>
+  )}
 
-        {entry.data.category && (
-          <span class="post-hero__pill">{entry.data.category.toUpperCase()}</span>
-        )}
+  <div class="post-page">
+    <nav class="post-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">SIGNAL &amp; NOISE</a>
+      {category && (
+        <>
+          <span class="post-breadcrumb__sep">/</span>
+          <span>{category.toUpperCase()}</span>
+        </>
+      )}
+    </nav>
 
-        <h1 class="post-hero__title" transition:name={"post-title-" + entry.id}>{entry.data.title}</h1>
-        <p class="post-hero__lede">{lede}</p>
+    {category && (
+      <p class="post-category">{category.toUpperCase()}</p>
+    )}
 
-        <div class="post-hero__rule"></div>
+    <h1 class="post-title" transition:name={"post-title-" + entry.id}>{entry.data.title}</h1>
 
-        <div class="post-hero__byline">
-          <span class="post-hero__byline-left">
-            BY TOM PHILLIPS &middot; <span transition:name={"post-date-" + entry.id}>{formattedDate}</span> &middot; {readTime} MIN READ
-          </span>
-          <button class="post-hero__share" id="share-btn" type="button">
-            SHARE / COPY LINK
-          </button>
-        </div>
+    <p class="post-lede">{lede}</p>
 
-        {rating !== undefined && (
-          <div class="post-hero__skulls">
-            {Array.from({ length: 5 }, (_, i) => {
-              const isFull = i < floorRating;
-              const isPartial = i === floorRating && fracRating > 0;
-              const isEmpty = !isFull && !isPartial;
-              const wrapWidth = isPartial ? Math.round(fracRating * SKULL_HERO_W) : SKULL_HERO_W;
-              return (
-                <span class="skull-wrap" style={`width: ${wrapWidth}px; overflow: hidden; display: inline-block; vertical-align: middle;`}>
-                  <img
-                    src="/skull-bone.svg"
-                    class="skull-icon"
-                    width={SKULL_HERO_W}
-                    height={SKULL_HERO_H}
-                    alt=""
-                    style={isEmpty ? 'opacity: 0.15' : ''}
-                  />
-                </span>
-              );
-            })}
-            <span class="post-hero__rating">{rating.toFixed(2)} / 5</span>
-          </div>
-        )}
+    <div class="post-rule"></div>
+
+    <div class="post-byline">
+      <span class="post-byline__text">
+        BY TOM PHILLIPS &middot; <span transition:name={"post-date-" + entry.id}>{formattedDate}</span> &middot; {readTime} MIN READ
+      </span>
+      <button class="post-byline__share" id="share-btn" type="button">SHARE / COPY LINK</button>
+    </div>
+
+    {rating !== undefined && (
+      <div class="post-teaser-skulls">
+        {Array.from({ length: 5 }, (_, i) => {
+          const isFull = i < floorRating;
+          const isPartial = i === floorRating && fracRating > 0;
+          const isEmpty = !isFull && !isPartial;
+          const wrapWidth = isPartial ? Math.round(fracRating * SKULL_HERO_W) : SKULL_HERO_W;
+          return (
+            <span class="skull-clip" style={`width:${wrapWidth}px`}>
+              <img
+                src="/skull-bone.png"
+                class="skull-icon"
+                width={SKULL_HERO_W}
+                height={SKULL_HERO_H}
+                alt=""
+                style={isEmpty ? 'opacity:0.15' : ''}
+              />
+            </span>
+          );
+        })}
+        <span class="post-teaser-skulls__score">{rating.toFixed(2)} / 5</span>
       </div>
+    )}
 
+    <div class="post-prose">
       {albumArt && (
-        <div class="post-hero__album-art-wrap">
-          <img
-            src={albumArt}
-            alt=""
-            class="post-hero__album-art"
-            width="280"
-            height="280"
-          />
-        </div>
+        <img src={albumArt} alt="" class="post-prose__album-art" width="203" height="203" />
       )}
+      <Content />
     </div>
-  </section>
 
-  <!-- Body: theme-responsive -->
-  <div class="post-body">
-    <div class="post-body__inner">
-      <div class="post-prose">
-        <Content />
-      </div>
+    <div class="post-author">
+      <p class="post-author__slash">/</p>
+      <div class="post-author__rule"></div>
+      <p class="post-author__label">WRITTEN BY</p>
+      <p class="post-author__name">Tom Phillips</p>
+      <p class="post-author__bio">
+        Writes about music from San Diego. Has been collecting records since before that was a personality trait. Practices guitar daily and remains genuinely bad at it.
+      </p>
+    </div>
 
-      {rating !== undefined && (
-        <div class="verdict">
-          <div class="verdict__divider"></div>
-          <p class="verdict__label">FINAL VERDICT</p>
-          <div class="verdict__row">
-            <div class="verdict__skulls">
-              {Array.from({ length: 5 }, (_, i) => {
-                const isFull = i < floorRating;
-                const isPartial = i === floorRating && fracRating > 0;
-                const isEmpty = !isFull && !isPartial;
-                const wrapWidth = isPartial ? Math.round(fracRating * SKULL_VDT_W) : SKULL_VDT_W;
-                return (
-                  <span class="skull-wrap" style={`width: ${wrapWidth}px; overflow: hidden; display: inline-block; vertical-align: middle;`}>
-                    <img
-                      src="/skull-bone.svg"
-                      class="skull-icon"
-                      width={SKULL_VDT_W}
-                      height={SKULL_VDT_H}
-                      alt=""
-                      style={isEmpty ? 'opacity: 0.15' : ''}
-                    />
-                  </span>
-                );
-              })}
-            </div>
-            <span class="verdict__score">{rating.toFixed(2)} / 5</span>
-          </div>
-          {verdict && <p class="verdict__blurb">{verdict}</p>}
+    {rating !== undefined && (
+      <div class="post-verdict">
+        <div class="post-verdict__rule"></div>
+        <p class="post-verdict__label">FINAL VERDICT</p>
+        <div class="post-verdict__skulls">
+          {Array.from({ length: 5 }, (_, i) => {
+            const isFull = i < floorRating;
+            const isPartial = i === floorRating && fracRating > 0;
+            const isEmpty = !isFull && !isPartial;
+            const wrapWidth = isPartial ? Math.round(fracRating * SKULL_VDT_W) : SKULL_VDT_W;
+            return (
+              <span class="skull-clip" style={`width:${wrapWidth}px`}>
+                <img
+                  src="/skull-bone.png"
+                  class="skull-icon"
+                  width={SKULL_VDT_W}
+                  height={SKULL_VDT_H}
+                  alt=""
+                  style={isEmpty ? 'opacity:0.15' : ''}
+                />
+              </span>
+            );
+          })}
+          <span class="post-verdict__score">{rating.toFixed(2)} / 5</span>
         </div>
-      )}
-
-      <div class="author-bio">
-        <p class="author-bio__slash">/</p>
-        <div class="author-bio__rule"></div>
-        <p class="author-bio__label">WRITTEN BY</p>
-        <p class="author-bio__name">Tom Phillips</p>
-        <p class="author-bio__text">
-          Writes about music from San Diego. Has been collecting records since before that was a personality trait. Practices guitar daily and remains genuinely bad at it.
-        </p>
+        {verdict && <p class="post-verdict__blurb">{verdict}</p>}
       </div>
-    </div>
+    )}
   </div>
 
   {related.length > 0 && (
     <section class="keep-reading">
-      <div class="keep-reading__inner">
-        <h2 class="keep-reading__heading">keep reading.</h2>
-        <div class="keep-reading__rule"></div>
-        <div class="keep-reading__grid">
-          {related.map((post) => (
-            <PostCard
-              title={post.data.title}
-              description={post.data.description}
-              category={post.data.category ?? 'Post'}
-              date={post.data.pubDate}
-              slug={post.id}
-            />
-          ))}
-        </div>
+      <h2 class="keep-reading__heading">keep reading.</h2>
+      <div class="keep-reading__rule"></div>
+      <div class="keep-reading__grid">
+        {related.map((post) => {
+          const postDate = post.data.pubDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          }).toUpperCase();
+          return (
+            <a href={`/blog/${post.id}`} class="krc">
+              <div class="krc__bar"></div>
+              <div class="krc__body">
+                <p class="krc__meta">
+                  {post.data.category ? post.data.category.toUpperCase() : 'POST'} &middot; {postDate}
+                </p>
+                <h3 class="krc__title">{post.data.title}</h3>
+                <p class="krc__excerpt">{post.data.description}</p>
+                <span class="krc__cta">READ &rarr;</span>
+              </div>
+            </a>
+          );
+        })}
       </div>
     </section>
   )}
@@ -194,132 +190,126 @@ const related = allPosts
 </BaseLayout>
 
 <script>
-  document.getElementById('share-btn')?.addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      const btn = document.getElementById('share-btn') as HTMLButtonElement;
-      if (btn) {
-        const original = btn.textContent;
-        btn.textContent = 'COPIED!';
-        setTimeout(() => { btn.textContent = original; }, 2000);
-      }
+  function initShareBtn() {
+    document.getElementById('share-btn')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const btn = document.getElementById('share-btn') as HTMLButtonElement;
+        if (btn) {
+          const orig = btn.textContent;
+          btn.textContent = 'COPIED!';
+          setTimeout(() => { btn.textContent = orig; }, 2000);
+        }
+      });
     });
-  });
+  }
+  initShareBtn();
+  document.addEventListener('astro:page-load', initShareBtn);
 </script>
 
 <style>
-  /* ---- Hero ---- */
-  .post-hero {
-    background: var(--color-bg);
+  /* ── Hero image ── */
+  .post-hero-img {
+    width: 100%;
+    height: 720px;
+    overflow: hidden;
   }
 
-  .post-hero__inner {
-    padding: 50px 60px 64px 80px;
-    display: block;
-  }
-
-  .post-hero__inner--with-art {
-    display: flex;
-    align-items: center;
-    gap: 60px;
-  }
-
-  .post-hero__content {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .post-hero__album-art-wrap {
-    flex-shrink: 0;
-  }
-
-  .post-hero__album-art {
-    width: 280px;
-    height: 280px;
+  .post-hero-img__img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     display: block;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   }
 
-  .post-hero__breadcrumb {
+  /* ── Page content wrapper ── */
+  .post-page {
+    background: var(--color-bg);
+    padding: 0 80px 80px;
+  }
+
+  /* ── Breadcrumb ── */
+  .post-breadcrumb {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.15em;
-    color: var(--color-muted);
-    margin-bottom: 20px;
+    letter-spacing: 0.18em;
+    color: #5a5a5a;
+    margin-top: 40px;
   }
 
-  .post-hero__breadcrumb a {
+  .post-breadcrumb a {
     color: inherit;
     text-decoration: none;
     transition: color 0.15s;
   }
 
-  .post-hero__breadcrumb a:hover {
+  .post-breadcrumb a:hover {
     color: #ff4d2e;
   }
 
-  .post-hero__sep {
+  .post-breadcrumb__sep {
     opacity: 0.5;
   }
 
-  .post-hero__pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.3rem 0.75rem;
-    font-size: 10px;
+  /* ── Category label ── */
+  .post-category {
+    font-size: 13px;
     font-weight: 500;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.26em;
     color: #ff4d2e;
-    border: 1.5px solid #ff4d2e;
-    margin-bottom: 24px;
+    margin-top: 8px;
   }
 
-  .post-hero__title {
-    font-size: clamp(2.5rem, 6vw, 5rem);
+  /* ── Title ── */
+  .post-title {
+    font-size: clamp(2.5rem, 6.1vw, 5.5rem);
     font-weight: 900;
     line-height: 0.95;
     letter-spacing: -0.04em;
     color: var(--color-ink);
-    margin-bottom: 28px;
-    max-width: 900px;
+    max-width: 1280px;
+    margin-top: 16px;
   }
 
-  .post-hero__lede {
+  /* ── Lede ── */
+  .post-lede {
     font-size: 22px;
     font-weight: 600;
     line-height: 1.4;
     color: var(--color-ink);
-    opacity: 0.85;
-    max-width: 700px;
+    max-width: 960px;
+    margin-top: 16px;
   }
 
-  .post-hero__rule {
+  /* ── Horizontal rule ── */
+  .post-rule {
     height: 4px;
     background: var(--color-ink);
-    margin: 40px 0;
+    margin-top: 40px;
   }
 
-  .post-hero__byline {
+  /* ── Byline ── */
+  .post-byline {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
+    margin-top: 16px;
   }
 
-  .post-hero__byline-left {
+  .post-byline__text {
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
     color: var(--color-muted);
   }
 
-  .post-hero__share {
+  .post-byline__share {
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
     color: var(--color-muted);
     background: none;
     border: none;
@@ -330,39 +320,60 @@ const related = allPosts
     white-space: nowrap;
   }
 
-  .post-hero__share:hover {
+  .post-byline__share:hover {
     color: #ff4d2e;
   }
 
-  .post-hero__skulls {
+  /* ── Skull teaser ── */
+  .post-teaser-skulls {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 32px;
+    gap: 5px;
+    margin-top: 16px;
   }
 
-  .post-hero__rating {
-    font-size: 14px;
-    font-weight: 700;
+  .post-teaser-skulls__score {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
     color: #ff4d2e;
-    margin-left: 4px;
+    margin-left: 8px;
   }
 
-  /* ---- Body ---- */
-  .post-body {
-    background: var(--color-bg);
+  /* ── Skull shared styles ── */
+  .skull-clip {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: middle;
+    flex-shrink: 0;
   }
 
-  .post-body__inner {
-    padding: 60px 24px 80px 80px;
+  .skull-icon {
+    display: block;
+    filter: invert(0);
   }
 
+  :global([data-theme="dark"]) .skull-icon {
+    filter: invert(1);
+  }
+
+  /* ── Body prose ── */
   .post-prose {
-    max-width: 480px;
+    max-width: 720px;
+    margin-top: 48px;
     font-size: 19px;
     font-weight: 400;
-    line-height: 1.55;
+    line-height: 1.65;
     color: var(--color-ink);
+  }
+
+  .post-prose__album-art {
+    float: left;
+    width: 203px;
+    height: 203px;
+    object-fit: cover;
+    margin-right: 32px;
+    margin-bottom: 16px;
   }
 
   .post-prose :global(p) {
@@ -392,13 +403,28 @@ const related = allPosts
   }
 
   .post-prose :global(blockquote) {
-    border-left: 8px solid #ff4d2e;
-    padding-left: 32px;
-    margin: 2rem 0;
+    margin: 2.5rem 0;
+    max-width: 1000px;
+    padding: 0;
+    border: none;
+  }
+
+  .post-prose :global(blockquote::before) {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 8px;
+    background: #ff4d2e;
+    margin-bottom: 20px;
+  }
+
+  .post-prose :global(blockquote p) {
     font-size: 36px;
     font-weight: 700;
     line-height: 1.2;
+    letter-spacing: -0.01em;
     color: var(--color-ink);
+    margin-bottom: 0;
   }
 
   .post-prose :global(a) {
@@ -414,83 +440,28 @@ const related = allPosts
     font-weight: 700;
   }
 
-  /* ---- Verdict ---- */
-  .verdict {
-    max-width: 480px;
-    margin-top: 56px;
-  }
-
-  .verdict__divider {
-    height: 1px;
-    background: var(--color-ink);
-    opacity: 0.12;
-    margin-bottom: 40px;
-  }
-
-  .verdict__label {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    color: #ff4d2e;
-    margin-bottom: 16px;
-  }
-
-  .verdict__row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-
-  .verdict__skulls {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .skull-icon {
-    filter: invert(0);
-    display: block;
-  }
-
-  :global([data-theme="dark"]) .skull-icon {
-    filter: invert(1);
-  }
-
-  .verdict__score {
-    font-size: 22px;
-    font-weight: 700;
-    color: #ff4d2e;
-  }
-
-  .verdict__blurb {
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 1.5;
-    color: var(--color-muted);
-  }
-
-  /* ---- Author bio ---- */
-  .author-bio {
-    max-width: 480px;
+  /* ── Author bio ── */
+  .post-author {
+    max-width: 720px;
     margin-top: 72px;
+    clear: both;
   }
 
-  .author-bio__slash {
+  .post-author__slash {
     font-size: 36px;
     font-weight: 900;
-    color: #ff4d2e;
     line-height: 1;
+    color: #ff4d2e;
     margin-bottom: 12px;
   }
 
-  .author-bio__rule {
+  .post-author__rule {
     height: 4px;
     background: var(--color-ink);
     margin-bottom: 24px;
   }
 
-  .author-bio__label {
+  .post-author__label {
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.18em;
@@ -498,14 +469,14 @@ const related = allPosts
     margin-bottom: 8px;
   }
 
-  .author-bio__name {
+  .post-author__name {
     font-size: 24px;
     font-weight: 700;
     color: var(--color-ink);
     margin-bottom: 12px;
   }
 
-  .author-bio__text {
+  .post-author__bio {
     font-size: 15px;
     font-weight: 400;
     line-height: 1.5;
@@ -513,15 +484,52 @@ const related = allPosts
     opacity: 0.8;
   }
 
-  /* ---- Keep reading ---- */
-  .keep-reading {
-    background: #0a0a0a;
+  /* ── Final verdict ── */
+  .post-verdict {
+    max-width: 720px;
+    margin-top: 56px;
   }
 
-  .keep-reading__inner {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 64px 60px 80px;
+  .post-verdict__rule {
+    height: 1px;
+    background: var(--color-ink);
+    opacity: 0.12;
+    margin-bottom: 40px;
+  }
+
+  .post-verdict__label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: #ff4d2e;
+    margin-bottom: 16px;
+  }
+
+  .post-verdict__skulls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .post-verdict__score {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ff4d2e;
+    margin-left: 8px;
+  }
+
+  .post-verdict__blurb {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+
+  /* ── Keep reading ── */
+  .keep-reading {
+    background: var(--color-bg);
+    padding: 64px 80px 80px;
   }
 
   .keep-reading__heading {
@@ -529,115 +537,153 @@ const related = allPosts
     font-weight: 900;
     line-height: 1;
     letter-spacing: -0.03em;
-    color: #ededed;
+    color: var(--color-ink);
     margin-bottom: 16px;
   }
 
   .keep-reading__rule {
     height: 4px;
-    background: #ededed;
+    background: var(--color-ink);
     margin-bottom: 32px;
   }
 
   .keep-reading__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0;
   }
 
-  /* ---- Responsive ---- */
+  .krc {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-ink);
+    text-decoration: none;
+    color: var(--color-ink);
+    min-height: 320px;
+    transition: background 0.15s;
+  }
 
-  /* Tablet (640–1023px) */
+  .krc:hover {
+    background: var(--color-surface);
+  }
+
+  .krc + .krc {
+    border-left: none;
+  }
+
+  .krc__bar {
+    height: 8px;
+    background: var(--color-ink);
+    flex-shrink: 0;
+  }
+
+  .krc__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 27px;
+  }
+
+  .krc__meta {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.198em;
+    color: #ff4d2e;
+    margin-bottom: 12px;
+  }
+
+  .krc__title {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    margin-bottom: 12px;
+  }
+
+  .krc__excerpt {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-muted);
+    flex: 1;
+  }
+
+  .krc__cta {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--color-ink);
+    padding-top: 24px;
+    display: block;
+  }
+
+  /* ── Tablet (640–1023px) ── */
   @media (min-width: 640px) and (max-width: 1023px) {
-    .post-hero__inner {
-      padding-left: 40px;
-      padding-right: 40px;
+    .post-hero-img {
+      height: 480px;
     }
 
-    .keep-reading__inner {
-      padding-left: 40px;
-      padding-right: 40px;
+    .post-page {
+      padding: 0 40px 64px;
     }
 
-    .post-body__inner {
-      padding-left: 40px;
-    }
-
-    .post-hero__album-art {
-      width: 220px;
-      height: 220px;
-    }
-
-    .keep-reading__grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  /* Mobile (≤639px) */
-  @media (max-width: 639px) {
-    .post-hero__inner {
-      padding: 32px 24px 48px 24px;
-    }
-
-    .post-hero__inner--with-art {
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .post-hero__album-art-wrap {
-      order: -1;
-      align-self: center;
-    }
-
-    .post-hero__album-art {
+    .post-prose__album-art {
       width: 160px;
       height: 160px;
     }
 
-    .post-hero__title {
-      font-size: clamp(2rem, 7vw, 5.5rem);
+    .keep-reading {
+      padding: 48px 40px 64px;
+    }
+  }
+
+  /* ── Mobile (≤639px) ── */
+  @media (max-width: 639px) {
+    .post-hero-img {
+      height: 240px;
     }
 
-    .post-hero__lede {
-      font-size: clamp(1rem, 3vw, 1.375rem);
+    .post-page {
+      padding: 0 24px 64px;
     }
 
-    .post-hero__byline {
+    .post-title {
+      font-size: clamp(2rem, 8vw, 3.5rem);
+    }
+
+    .post-lede {
+      font-size: 18px;
+    }
+
+    .post-byline {
       flex-direction: column;
       align-items: flex-start;
       gap: 8px;
     }
 
-    .post-hero__skulls .skull-icon {
-      width: 28px;
-      height: auto;
-    }
-
-    .post-body__inner {
-      padding: 40px 24px 60px;
-    }
-
     .post-prose {
       font-size: 17px;
+      margin-top: 32px;
+    }
+
+    .post-prose__album-art {
+      float: none;
+      width: 100%;
+      height: 240px;
+      margin-right: 0;
+      margin-bottom: 24px;
+    }
+
+    .post-prose :global(blockquote p) {
+      font-size: clamp(1.25rem, 5vw, 2.25rem);
+    }
+
+    .post-author,
+    .post-verdict {
       max-width: 100%;
     }
 
-    .verdict,
-    .author-bio {
-      max-width: 100%;
-    }
-
-    .post-prose :global(blockquote) {
-      font-size: clamp(1.2rem, 4vw, 2.25rem);
-      padding-left: 20px;
-    }
-
-    .verdict__skulls .skull-icon {
-      width: 32px;
-      height: auto;
-    }
-
-    .keep-reading__inner {
+    .keep-reading {
       padding: 48px 24px 64px;
     }
 
@@ -647,6 +693,15 @@ const related = allPosts
 
     .keep-reading__grid {
       grid-template-columns: 1fr;
+    }
+
+    .krc + .krc {
+      border-left: 1px solid var(--color-ink);
+      border-top: none;
+    }
+
+    .krc__title {
+      font-size: 24px;
     }
   }
 </style>

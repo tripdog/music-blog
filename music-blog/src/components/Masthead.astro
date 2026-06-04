@@ -67,17 +67,16 @@ const isHome = Astro.url.pathname === '/';
 </header>
 
 <script>
-  function initThemeToggle() {
-    const toggle = document.getElementById('theme-toggle');
+  function initTheme() {
+    var toggle = document.getElementById('theme-toggle');
     if (!toggle) return;
-
-    const current = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', current);
-
-    toggle.addEventListener('click', () => {
-      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+    var apply = function(t: string) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('sn-theme', t);
+    };
+    toggle.addEventListener('click', function() {
+      var cur = document.documentElement.getAttribute('data-theme') || 'light';
+      apply(cur === 'dark' ? 'light' : 'dark');
     });
   }
 
@@ -98,10 +97,10 @@ const isHome = Astro.url.pathname === '/';
     });
   }
 
-  initThemeToggle();
+  initTheme();
   initNavToggle();
 
-  document.addEventListener('astro:page-load', initThemeToggle);
+  document.addEventListener('astro:page-load', initTheme);
   document.addEventListener('astro:page-load', initNavToggle);
 </script>
 

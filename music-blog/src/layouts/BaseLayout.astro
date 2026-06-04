@@ -15,8 +15,10 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
 <html lang="en">
   <head>
     <script is:inline>
-      const theme = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-theme', theme);
+      (function(){
+        var t=localStorage.getItem('sn-theme')||'light';
+        document.documentElement.setAttribute('data-theme',t);
+      })();
     </script>
     <BaseHead title={title} description={description} />
     <ClientRouter />
