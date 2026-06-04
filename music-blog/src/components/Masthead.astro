@@ -71,7 +71,7 @@ const isHome = Astro.url.pathname === '/';
     var toggle=document.getElementById('theme-toggle');
     if(!toggle)return;
     toggle.addEventListener('click',function(){
-      var cur=document.documentElement.getAttribute('data-theme')||'light';
+      var cur=document.documentElement.getAttribute('data-theme')||'dark';
       var next=cur==='dark'?'light':'dark';
       document.documentElement.setAttribute('data-theme',next);
       localStorage.setItem('sn-theme',next);
