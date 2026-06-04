@@ -67,28 +67,42 @@ const isHome = Astro.url.pathname === '/';
 </header>
 
 <script>
-  const themeToggle = document.getElementById('theme-toggle') as HTMLButtonElement;
-  const navToggle = document.getElementById('nav-toggle') as HTMLButtonElement;
-  const navMenu = document.getElementById('nav-menu') as HTMLElement;
+  function initThemeToggle() {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
 
-  themeToggle?.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('sn-theme', next);
-  });
+    const current = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', current);
 
-  navToggle?.addEventListener('click', () => {
-    const isOpen = navMenu.classList.toggle('nav-open');
-    navToggle.setAttribute('aria-expanded', String(isOpen));
-  });
-
-  navMenu?.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => {
-      navMenu.classList.remove('nav-open');
-      navToggle?.setAttribute('aria-expanded', 'false');
+    toggle.addEventListener('click', () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
     });
-  });
+  }
+
+  function initNavToggle() {
+    const navToggle = document.getElementById('nav-toggle') as HTMLButtonElement;
+    const navMenu = document.getElementById('nav-menu') as HTMLElement;
+
+    navToggle?.addEventListener('click', () => {
+      const isOpen = navMenu.classList.toggle('nav-open');
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    navMenu?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('nav-open');
+        navToggle?.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  initThemeToggle();
+  initNavToggle();
+
+  document.addEventListener('astro:page-load', initThemeToggle);
+  document.addEventListener('astro:page-load', initNavToggle);
 </script>
 
 <style>

@@ -14,20 +14,12 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
 <!doctype html>
 <html lang="en">
   <head>
+    <script is:inline>
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    </script>
     <BaseHead title={title} description={description} />
     <ClientRouter />
-    <script is:inline>
-      (function () {
-        const stored = localStorage.getItem('sn-theme');
-        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', stored || preferred);
-      })();
-      document.addEventListener('astro:after-swap', () => {
-        const stored = localStorage.getItem('sn-theme');
-        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', stored || preferred);
-      });
-    </script>
   </head>
   <body>
     <slot />

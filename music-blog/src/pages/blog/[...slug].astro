@@ -28,6 +28,7 @@ const formattedDate = entry.data.pubDate.toLocaleDateString('en-US', {
 }).toUpperCase();
 
 const lede = entry.data.lede ?? entry.data.description;
+const albumArt = entry.data.albumArt;
 const rating = entry.data.rating;
 const verdict = entry.data.verdict;
 const floorRating = rating !== undefined ? Math.floor(rating) : 0;
@@ -50,47 +51,61 @@ const related = allPosts
 
   <!-- Hero: always dark -->
   <section class="post-hero">
-    <div class="post-hero__inner">
-      <nav class="post-hero__breadcrumb" aria-label="Breadcrumb">
-        <a href="/#latest">LATEST</a>
+    <div class:list={["post-hero__inner", { "post-hero__inner--with-art": !!albumArt }]}>
+      <div class="post-hero__content">
+        <nav class="post-hero__breadcrumb" aria-label="Breadcrumb">
+          <a href="/#latest">LATEST</a>
+          {entry.data.category && (
+            <>
+              <span class="post-hero__sep">/</span>
+              <span>{entry.data.category.toUpperCase()}</span>
+            </>
+          )}
+        </nav>
+
         {entry.data.category && (
-          <>
-            <span class="post-hero__sep">/</span>
-            <span>{entry.data.category.toUpperCase()}</span>
-          </>
+          <span class="post-hero__pill">{entry.data.category.toUpperCase()}</span>
         )}
-      </nav>
 
-      {entry.data.category && (
-        <span class="post-hero__pill">{entry.data.category.toUpperCase()}</span>
-      )}
+        <h1 class="post-hero__title" transition:name={"post-title-" + entry.id}>{entry.data.title}</h1>
+        <p class="post-hero__lede">{lede}</p>
 
-      <h1 class="post-hero__title" transition:name={"post-title-" + entry.id}>{entry.data.title}</h1>
-      <p class="post-hero__lede">{lede}</p>
+        <div class="post-hero__rule"></div>
 
-      <div class="post-hero__rule"></div>
+        <div class="post-hero__byline">
+          <span class="post-hero__byline-left">
+            BY TOM PHILLIPS &middot; <span transition:name={"post-date-" + entry.id}>{formattedDate}</span> &middot; {readTime} MIN READ
+          </span>
+          <button class="post-hero__share" id="share-btn" type="button">
+            SHARE / COPY LINK
+          </button>
+        </div>
 
-      <div class="post-hero__byline">
-        <span class="post-hero__byline-left">
-          BY TOM PHILLIPS &middot; <span transition:name={"post-date-" + entry.id}>{formattedDate}</span> &middot; {readTime} MIN READ
-        </span>
-        <button class="post-hero__share" id="share-btn" type="button">
-          SHARE / COPY LINK
-        </button>
+        {rating !== undefined && (
+          <div class="post-hero__skulls">
+            {Array.from({ length: 5 }, (_, i) => (
+              <img
+                src="/skull-bone.svg"
+                width={SKULL_HERO_W}
+                height={SKULL_HERO_H}
+                alt=""
+                style={i >= floorRating ? 'opacity: 0.18' : ''}
+              />
+            ))}
+            <span class="post-hero__rating">{rating.toFixed(2)} / 5</span>
+          </div>
+        )}
       </div>
 
-      {rating !== undefined && (
-        <div class="post-hero__skulls">
-          {Array.from({ length: 5 }, (_, i) => (
-            <img
-              src="/skull-bone.svg"
-              width={SKULL_HERO_W}
-              height={SKULL_HERO_H}
-              alt=""
-              style={i >= floorRating ? 'opacity: 0.18' : ''}
-            />
-          ))}
-          <span class="post-hero__rating">{rating.toFixed(2)} / 5</span>
+      {albumArt && (
+        <div class="post-hero__album-art-wrap">
+          <img
+            src={albumArt}
+            alt=""
+            class="post-hero__album-art"
+            width="280"
+            height="280"
+          />
         </div>
       )}
     </div>
@@ -199,6 +214,30 @@ const related = allPosts
     max-width: 1440px;
     margin: 0 auto;
     padding: 50px 60px 64px;
+    display: block;
+  }
+
+  .post-hero__inner--with-art {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .post-hero__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .post-hero__album-art-wrap {
+    flex-shrink: 0;
+  }
+
+  .post-hero__album-art {
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   }
 
   .post-hero__breadcrumb {
@@ -319,15 +358,14 @@ const related = allPosts
   }
 
   .post-body__inner {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 60px 24px 80px;
+    padding: 60px 24px 80px 80px;
   }
 
   .post-prose {
+    max-width: 480px;
     font-size: 19px;
     font-weight: 400;
-    line-height: 1.65;
+    line-height: 1.55;
     color: var(--color-ink);
   }
 
@@ -382,6 +420,7 @@ const related = allPosts
 
   /* ---- Verdict ---- */
   .verdict {
+    max-width: 480px;
     margin-top: 56px;
   }
 
@@ -443,6 +482,7 @@ const related = allPosts
 
   /* ---- Author bio ---- */
   .author-bio {
+    max-width: 480px;
     margin-top: 72px;
   }
 
@@ -526,7 +566,12 @@ const related = allPosts
     }
 
     .post-body__inner {
-      max-width: 600px;
+      padding-left: 40px;
+    }
+
+    .post-hero__album-art {
+      width: 220px;
+      height: 220px;
     }
 
     .keep-reading__grid {
@@ -538,6 +583,21 @@ const related = allPosts
   @media (max-width: 639px) {
     .post-hero__inner {
       padding: 32px 24px 48px;
+    }
+
+    .post-hero__inner--with-art {
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .post-hero__album-art-wrap {
+      order: -1;
+      align-self: center;
+    }
+
+    .post-hero__album-art {
+      width: 160px;
+      height: 160px;
     }
 
     .post-hero__title {
@@ -560,12 +620,17 @@ const related = allPosts
     }
 
     .post-body__inner {
-      max-width: 100%;
       padding: 40px 24px 60px;
     }
 
     .post-prose {
       font-size: 17px;
+      max-width: 100%;
+    }
+
+    .verdict,
+    .author-bio {
+      max-width: 100%;
     }
 
     .post-prose :global(blockquote) {
