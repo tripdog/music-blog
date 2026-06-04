@@ -89,12 +89,11 @@ const related = allPosts
     {rating !== undefined && (
       <div class="post-teaser-skulls">
         {Array.from({ length: 5 }, (_, i) => {
-          const isFull = i < floorRating;
-          const isPartial = i === floorRating && fracRating > 0;
-          const isEmpty = !isFull && !isPartial;
-          const wrapWidth = isPartial ? Math.round(fracRating * SKULL_HERO_W) : SKULL_HERO_W;
-          return (
-            <span class="skull-clip" style={`width:${wrapWidth}px`}>
+            const isFull = i < floorRating;
+            const isEmpty = !isFull;
+            const wrapWidth = SKULL_HERO_W;
+            return (
+              <span class="skull-clip" style={`width:${wrapWidth}px`}>
               <img
                 src="/skull-bone.svg"
                 class="skull-icon"
@@ -134,9 +133,8 @@ const related = allPosts
         <div class="post-verdict__skulls">
           {Array.from({ length: 5 }, (_, i) => {
             const isFull = i < floorRating;
-            const isPartial = i === floorRating && fracRating > 0;
-            const isEmpty = !isFull && !isPartial;
-            const wrapWidth = isPartial ? Math.round(fracRating * SKULL_VDT_W) : SKULL_VDT_W;
+            const isEmpty = !isFull;
+            const wrapWidth = SKULL_VDT_W;
             return (
               <span class="skull-clip" style={`width:${wrapWidth}px`}>
                 <img
