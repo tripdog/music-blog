@@ -67,16 +67,14 @@ const isHome = Astro.url.pathname === '/';
 </header>
 
 <script>
-  function initTheme() {
-    var toggle = document.getElementById('theme-toggle');
-    if (!toggle) return;
-    var apply = function(t: string) {
-      document.documentElement.setAttribute('data-theme', t);
-      localStorage.setItem('sn-theme', t);
-    };
-    toggle.addEventListener('click', function() {
-      var cur = document.documentElement.getAttribute('data-theme') || 'light';
-      apply(cur === 'dark' ? 'light' : 'dark');
+  function initTheme(){
+    var toggle=document.getElementById('theme-toggle');
+    if(!toggle)return;
+    toggle.addEventListener('click',function(){
+      var cur=document.documentElement.getAttribute('data-theme')||'light';
+      var next=cur==='dark'?'light':'dark';
+      document.documentElement.setAttribute('data-theme',next);
+      localStorage.setItem('sn-theme',next);
     });
   }
 
