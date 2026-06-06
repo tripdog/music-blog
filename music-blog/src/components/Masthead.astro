@@ -1,6 +1,9 @@
 ---
 import SkullMark from './SkullMark.astro';
+import { getLatestPost } from '../lib/posts';
 const isHome = Astro.url.pathname === '/';
+const latestPost = await getLatestPost();
+const latestHref = latestPost ? `/blog/${latestPost.id}` : '/#latest';
 ---
 
 <header class="masthead">
@@ -11,7 +14,7 @@ const isHome = Astro.url.pathname === '/';
     </a>
 
     <nav class="masthead__nav" aria-label="Primary navigation">
-      <a href="/#latest">LATEST</a>
+      <a href={latestHref}>LATEST</a>
       <a href="/#whats-here">GENRES</a>
       <a href="/about">ABOUT</a>
     </nav>
@@ -60,7 +63,7 @@ const isHome = Astro.url.pathname === '/';
   </div>
 
   <nav class="masthead__mobile-nav" id="nav-menu" aria-label="Mobile navigation">
-    <a href="/#latest">LATEST</a>
+    <a href={latestHref}>LATEST</a>
     <a href="/#whats-here">GENRES</a>
     <a href="/about">ABOUT</a>
   </nav>
