@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Masthead from '../components/Masthead.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { getAllPosts } from '../lib/posts';
+
+const posts = await getAllPosts();
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+---
+
+<BaseLayout title="Archive — Signal & Noise" description="Every post on Signal & Noise, newest first.">
+  <Masthead />
+
+  <main class="archive">
+
+    <section class="archive-hero">
+      <div class="archive__inner">
+        <p class="archive__eyebrow">ARCHIVE</p>
+        <h1 class="archive-hero__heading">Every post, newest first<span class="dot">.</span></h1>
+        <div class="archive-hero__rule"></div>
+      </div>
+    </section>
+
+    <section class="archive-list">
+      <div class="archive__inner">
+        {posts.length === 0 ? (
+          <p class="archive-empty">Nothing published yet — check back soon.</p>
+        ) : (
+          <ol class="archive-ol">
+            {posts.map((post) => (
+              <li class="archive-row">
+                <a href={`/blog/${post.id}`} class="archive-row__link">
+                  <time class="archive-row__date" datetime={post.data.pubDate.toISOString()}>
+                    {formatDate(post.data.pubDate)}
+                  </time>
+                  <span class="archive-row__title">{post.data.title}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
+    </section>
+
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
+
+<style>
+  .archive {
+    background: var(--color-bg);
+    min-height: 80vh;
+  }
+
+  .archive__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .archive__eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* ---- Hero ---- */
+  .archive-hero {
+    padding-top: 64px;
+    padding-bottom: 40px;
+  }
+
+  .archive-hero__heading {
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 900;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    color: var(--color-ink);
+    margin-bottom: 32px;
+  }
+
+  .dot {
+    color: var(--color-orange);
+  }
+
+  .archive-hero__rule {
+    height: 8px;
+    background: var(--color-ink);
+  }
+
+  /* ---- List ---- */
+  .archive-list {
+    padding-top: 0;
+    padding-bottom: 64px;
+  }
+
+  .archive-ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .archive-row {
+    border-bottom: 1px solid var(--color-muted);
+  }
+
+  .archive-row__link {
+    display: flex;
+    align-items: baseline;
+    gap: 32px;
+    padding: 18px 0;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .archive-row__link:hover .archive-row__title {
+    color: var(--color-orange);
+  }
+
+  .archive-row__date {
+    flex-shrink: 0;
+    width: 120px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .archive-row__title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-ink);
+    transition: color 0.15s;
+  }
+
+  /* ---- Empty state ---- */
+  .archive-empty {
+    padding: 48px 0;
+    font-size: 17px;
+    color: var(--color-muted);
+  }
+
+  /* ---- Mobile (<=639px) ---- */
+  @media (max-width: 639px) {
+    .archive__inner {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    .archive-row__link {
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .archive-row__date {
+      width: auto;
+    }
+
+    .archive-row__title {
+      font-size: 16px;
+    }
+  }
+</style>
