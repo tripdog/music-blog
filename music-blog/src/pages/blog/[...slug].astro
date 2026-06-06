@@ -58,7 +58,7 @@ const related = allPosts
     </div>
   )}
 
-  <div class="post-page">
+  <main class="post-page">
     <nav class="post-breadcrumb" aria-label="Breadcrumb">
       <a href="/">SIGNAL &amp; NOISE</a>
       {category && (
@@ -153,7 +153,7 @@ const related = allPosts
         {verdict && <p class="post-verdict__blurb">{verdict}</p>}
       </div>
     )}
-  </div>
+  </main>
 
   {related.length > 0 && (
     <section class="keep-reading">
