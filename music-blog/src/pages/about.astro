@@ -53,7 +53,13 @@ const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
       </div>
     </section>
 
-    <!-- 4. Principles block -->
+    <!-- 4. Colophon -->
+    <div class="about__inner about-colophon">
+      <div class="about-colophon__rule"></div>
+      <p class="about-colophon__text">TOM PHILLIPS. SAN DIEGO. EST. 2026.</p>
+    </div>
+
+    <!-- 5. Principles block -->
     <section class="about-principles">
       <div class="about-principles__inner">
         <p class="about__eyebrow about__eyebrow--orange">HOW IT WORKS</p>
@@ -61,12 +67,6 @@ const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
         <p class="about-principles__body">Published every two weeks or so. If something's good it gets written about. If it isn't, it doesn't.</p>
       </div>
     </section>
-
-    <!-- 5. Colophon -->
-    <div class="about__inner about-colophon">
-      <div class="about-colophon__rule"></div>
-      <p class="about-colophon__text">TOM PHILLIPS. SAN DIEGO. EST. 2026.</p>
-    </div>
 
   </main>
 
@@ -96,7 +96,7 @@ const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
   }
 
   .about__eyebrow--orange {
-    color: var(--color-orange);
+    color: var(--color-surface);
   }
 
   /* ---- Hero ---- */
@@ -197,7 +197,7 @@ const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
 
   /* ---- Principles (inverted) ---- */
   .about-principles {
-    background: var(--color-ink);
+    background: var(--color-orange);
     margin-top: 16px;
   }
 
@@ -211,15 +211,14 @@ const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
     font-size: clamp(28px, 4vw, 40px);
     font-weight: 900;
     line-height: 1.05;
-    color: var(--color-surface);
+    color: var(--color-ink);
     margin-bottom: 20px;
   }
 
   .about-principles__body {
     font-size: 17px;
     line-height: 1.5;
-    color: var(--color-surface);
-    opacity: 0.85;
+    color: var(--color-ink);
     max-width: 680px;
   }
 
