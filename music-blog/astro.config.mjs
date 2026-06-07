@@ -7,6 +7,9 @@ import { defineConfig, fontProviders } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://signal-n-noise.com',
+	redirects: {
+		'/blog': '/archive',
+	},
 	integrations: [mdx(), sitemap()],
 	fonts: [
 		{
