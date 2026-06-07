@@ -7,27 +7,12 @@
       <h2 class="newsletter__heading">subscribe.</h2>
       <p class="newsletter__body">Every two weeks. New writing, a few recommendations, no algorithms.</p>
     </div>
-    <form class="newsletter__form">
-      <input
-        class="newsletter__input"
-        type="email"
-        name="email"
-        placeholder="your@email.com"
-        required
-        aria-label="Email address"
-      />
-      <button class="newsletter__btn" type="submit">SUBSCRIBE &rarr;</button>
-    </form>
+    <div class="newsletter__embed">
+      <script is:inline async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="59fb7fce-ddf6-46b9-a2d4-90d50108adfc"></script>
+      <script is:inline type="text/javascript" async src="https://subscribe-forms.beehiiv.com/attribution.js"></script>
+    </div>
   </div>
 </section>
-
-<script>
-  const form = document.querySelector('.newsletter__form') as HTMLFormElement;
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    console.log('Subscribe clicked — MailChimp integration coming');
-  });
-</script>
 
 <style>
   .newsletter {
@@ -72,55 +57,18 @@
     overflow-wrap: break-word;
   }
 
-  .newsletter__form {
-    display: flex;
-    align-items: center;
-    gap: 0;
+  .newsletter__embed {
     margin-left: auto;
     flex-shrink: 0;
+    min-width: 380px;
+    max-width: 480px;
   }
 
-  .newsletter__input {
-    width: 380px;
-    height: 48px;
-    padding: 0 16px;
-    font-size: 15px;
-    font-weight: 400;
-    color: #5a5a5a;
-    background: #ededed;
-    border: 2px solid #0a0a0a;
-    border-right: none;
-    outline: none;
-    font-family: inherit;
-  }
-
-  .newsletter__input::placeholder {
-    color: #5a5a5a;
-  }
-
-  .newsletter__input:focus {
-    background: #fff;
-  }
-
-  .newsletter__btn {
-    height: 48px;
-    padding: 0 24px;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    color: #f5f5f0;
-    background: #0a0a0a;
-    border: 2px solid #0a0a0a;
-    white-space: nowrap;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.15s;
-  }
-
-  .newsletter__btn:hover {
-    background: #ff4d2e;
-    color: #0a0a0a;
-    border-color: #0a0a0a;
+  /* Nudge Beehiiv's injected widget to fit the orange section */
+  .newsletter__embed :global(iframe),
+  .newsletter__embed :global(.beehiiv-subscribe-form) {
+    max-width: 100% !important;
+    background: transparent !important;
   }
 
   /* Tablet (640–1023px) */
@@ -132,8 +80,10 @@
       padding: 48px 40px;
     }
 
-    .newsletter__form {
+    .newsletter__embed {
       margin-left: 0;
+      width: 100%;
+      max-width: 100%;
     }
   }
 
@@ -161,22 +111,11 @@
       padding-right: 0;
     }
 
-    .newsletter__form {
-      flex-direction: column;
-      align-items: stretch;
+    .newsletter__embed {
       width: 100%;
+      min-width: 0;
+      max-width: 100%;
       margin-left: 0;
-    }
-
-    .newsletter__input {
-      width: 100%;
-      border-right: 2px solid #0a0a0a;
-      border-bottom: none;
-    }
-
-    .newsletter__btn {
-      width: 100%;
-      border-top: none;
     }
   }
 </style>
