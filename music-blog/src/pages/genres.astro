@@ -1,0 +1,440 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Masthead from '../components/Masthead.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { getAllPosts } from '../lib/posts';
+
+const allPosts = await getAllPosts();
+
+const GENRE_META = [
+  { slug: 'punk',   label: 'PUNK',   description: 'Fast, loud, and still saying something.' },
+  { slug: 'reggae', label: 'REGGAE', description: 'Roots, dub, and the long shadow of Kingston.' },
+  { slug: 'metal',  label: 'METAL',  description: 'Heavy in every sense of the word.' },
+  { slug: 'goth',   label: 'GOTH',   description: 'Atmosphere over genre. Always.' },
+  { slug: 'other',  label: 'OTHER',  description: "Everything that won't stay in a box." },
+];
+
+const genres = GENRE_META.map((g) => {
+  const posts = allPosts.filter(
+    (p) => p.data.category?.toLowerCase() === g.slug
+  );
+  return {
+    ...g,
+    count: posts.length,
+    latestPost: posts[0] ?? null,
+  };
+});
+
+const keepReading = allPosts.slice(0, 2);
+---
+
+<BaseLayout
+  title="Genres — Signal & Noise"
+  description="The musical galaxy is big. These are the corners of it I keep coming back to."
+>
+  <Masthead />
+
+  <div class="orange-rule"></div>
+
+  <main>
+    <!-- Hero -->
+    <section class="genres-hero">
+      <div class="genres-hero__inner">
+        <p class="genres-hero__eyebrow">GENRES</p>
+        <h1 class="genres-hero__heading">
+          The genres we live in<span class="dot">.</span>
+        </h1>
+        <p class="genres-hero__lead">
+          The musical galaxy is big. These are the corners of it I keep coming back to. Not because they're the only ones worth writing about, but because they've earned it.
+        </p>
+        <div class="ink-rule"></div>
+      </div>
+    </section>
+
+    <!-- Genre card grid -->
+    <section class="genres-section">
+      <div class="genres-section__inner">
+        <div class="genres-grid">
+          {genres.map((genre) => (
+            <article class="genre-card">
+              <div class="genre-card__bar"></div>
+              <div class="genre-card__body">
+                <p class="genre-card__label">{genre.label}</p>
+                <p class="genre-card__count">
+                  {genre.count} {genre.count === 1 ? 'POST' : 'POSTS'}
+                </p>
+                <p class="genre-card__desc">{genre.description}</p>
+                {genre.latestPost && (
+                  <p class="genre-card__latest">{genre.latestPost.data.title}</p>
+                )}
+                <a href={`/category/${genre.slug}`} class="genre-card__read">
+                  READ &rarr;
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Keep reading -->
+  {keepReading.length > 0 && (
+    <section class="keep-reading">
+      <div class="keep-reading__inner">
+        <h2 class="keep-reading__heading">keep reading.</h2>
+        <div class="keep-reading__rule"></div>
+        <div class="keep-reading__grid">
+          {keepReading.map((post) => {
+            const postDate = post.data.pubDate.toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            }).toUpperCase();
+            return (
+              <a href={`/blog/${post.id}`} class="krc">
+                <div class="krc__bar"></div>
+                <div class="krc__body">
+                  <p class="krc__meta">
+                    {post.data.category ? post.data.category.toUpperCase() : 'POST'} &middot; {postDate}
+                  </p>
+                  <h3 class="krc__title">{post.data.title}</h3>
+                  <p class="krc__excerpt">{post.data.description}</p>
+                  <span class="krc__cta">READ &rarr;</span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <SiteFooter />
+</BaseLayout>
+
+<style>
+  /* ── Rules ── */
+  .orange-rule {
+    height: 8px;
+    background: var(--color-orange);
+  }
+
+  .ink-rule {
+    height: 8px;
+    background: var(--color-ink);
+    margin-top: 40px;
+  }
+
+  /* ── Hero ── */
+  .genres-hero {
+    background: var(--color-bg);
+    padding-top: 64px;
+    padding-bottom: 0;
+  }
+
+  .genres-hero__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 80px 0;
+  }
+
+  .genres-hero__eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+    margin-bottom: 16px;
+  }
+
+  .genres-hero__heading {
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 900;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    color: var(--color-ink);
+    margin-bottom: 28px;
+  }
+
+  .dot {
+    color: var(--color-orange);
+  }
+
+  .genres-hero__lead {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--color-ink);
+    max-width: 760px;
+    opacity: 0.85;
+  }
+
+  /* ── Genre section ── */
+  .genres-section {
+    background: var(--color-bg);
+  }
+
+  .genres-section__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 60px 80px 80px;
+  }
+
+  /* ── Genre grid: 6 equal columns, cards span 2 each for 3+2 layout ── */
+  .genres-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+  }
+
+  /* Row 1: three cards across */
+  .genre-card:nth-child(1) { grid-column: 1 / 3; }
+  .genre-card:nth-child(2) { grid-column: 3 / 5; }
+  .genre-card:nth-child(3) { grid-column: 5 / 7; }
+
+  /* Row 2: two cards centered (cols 2–4 and 4–6, leaving one empty col on each side) */
+  .genre-card:nth-child(4) { grid-column: 2 / 4; }
+  .genre-card:nth-child(5) { grid-column: 4 / 6; }
+
+  /* ── Genre card ── */
+  .genre-card {
+    border: 1px solid var(--color-ink);
+    display: flex;
+    flex-direction: column;
+    min-height: 280px;
+  }
+
+  .genre-card__bar {
+    height: 8px;
+    background: var(--color-orange);
+    flex-shrink: 0;
+  }
+
+  .genre-card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 28px;
+  }
+
+  .genre-card__label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--color-ink);
+    margin-bottom: 4px;
+  }
+
+  .genre-card__count {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--color-muted);
+    margin-bottom: 20px;
+  }
+
+  .genre-card__desc {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    flex: 1;
+    margin-bottom: 16px;
+  }
+
+  .genre-card__latest {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-muted);
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .genre-card__read {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: color 0.15s;
+    margin-top: auto;
+  }
+
+  .genre-card__read:hover {
+    color: var(--color-orange);
+  }
+
+  /* ── Keep reading ── */
+  .keep-reading {
+    background: var(--color-bg);
+  }
+
+  .keep-reading__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 64px 80px 80px;
+  }
+
+  .keep-reading__heading {
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+    margin-bottom: 16px;
+  }
+
+  .keep-reading__rule {
+    height: 4px;
+    background: var(--color-ink);
+    margin-bottom: 32px;
+  }
+
+  .keep-reading__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .krc {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-ink);
+    text-decoration: none;
+    color: var(--color-ink);
+    min-height: 320px;
+    transition: background 0.15s;
+  }
+
+  .krc:hover {
+    background: var(--color-surface);
+  }
+
+  .krc + .krc {
+    border-left: none;
+  }
+
+  .krc__bar {
+    height: 8px;
+    background: var(--color-ink);
+    flex-shrink: 0;
+  }
+
+  .krc__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 27px;
+  }
+
+  .krc__meta {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.198em;
+    color: var(--color-orange);
+    margin-bottom: 12px;
+  }
+
+  .krc__title {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    margin-bottom: 12px;
+  }
+
+  .krc__excerpt {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-muted);
+    flex: 1;
+  }
+
+  .krc__cta {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--color-ink);
+    padding-top: 24px;
+    display: block;
+  }
+
+  /* ── Tablet (640–1023px) ── */
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .genres-hero__inner,
+    .genres-section__inner,
+    .keep-reading__inner {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+
+    .genres-section__inner {
+      padding-top: 48px;
+    }
+
+    /* 2-column grid; reset explicit placement */
+    .genres-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .genre-card:nth-child(n) {
+      grid-column: auto;
+    }
+
+    .keep-reading__inner {
+      padding-top: 48px;
+    }
+  }
+
+  /* ── Mobile (≤639px) ── */
+  @media (max-width: 639px) {
+    .genres-hero__inner,
+    .genres-section__inner,
+    .keep-reading__inner {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    .genres-section__inner {
+      padding-top: 40px;
+    }
+
+    .genres-hero__heading {
+      font-size: clamp(2.5rem, 10vw, 4rem);
+    }
+
+    /* Single-column grid; reset explicit placement */
+    .genres-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .genre-card:nth-child(n) {
+      grid-column: auto;
+    }
+
+    .keep-reading__heading {
+      font-size: 36px;
+    }
+
+    .keep-reading__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .krc + .krc {
+      border-left: 1px solid var(--color-ink);
+      border-top: none;
+    }
+
+    .krc__title {
+      font-size: 24px;
+    }
+  }
+</style>
