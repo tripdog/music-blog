@@ -1,6 +1,6 @@
 # Signal & Noise: Project TODO
 
-*Last updated: 2026-06-08 (favicon, OG tags, and meta descriptions shipped; decisions log updated)*
+*Last updated: 2026-06-08 (success page, Web3Forms redirect, and orange-rule cleanup shipped)*
 
 Working doc for the Astro music blog. Grouped by effort and dependencies.
 
@@ -57,6 +57,12 @@ Reality check vs. the original plan: the first plan assumed a shared layout foot
 - [x] Added `:global()` CSS to constrain the injected iframe to `max-width: 100%` and `background: transparent`.
 - [x] Footer has no newsletter signup — no footer changes needed.
 - [x] Stale remote branches (`emdash/build-contact-page-xiz82`, `emdash/genres-landingpage-build-o9yvy`, `emdash/connect-newsletter-form-tbkfq`) deleted via API after merge.
+
+### Form success page + orange-rule cleanup (PR #16, merged 2026-06-08)
+
+- [x] `/message-sent` page: headline "Boom! Got it.", subhead, single CTA back to `/archive`. Matches Contact/About hero layout (Inter heavy, orange punctuation, ink rule, no nav link).
+- [x] Web3Forms redirect hidden input added to contact form (`name="redirect"` pointing to `https://signal-n-noise.com/message-sent`).
+- [x] Spurious orange-rule divs (and their dead CSS) removed from Contact, Genres, and message-sent. Rule untouched on homepage and post pages.
 
 ### Contact page (PR #12, merged 2026-06-08)
 
@@ -149,6 +155,9 @@ That session burned a lot of cycles on worktree and branch confusion. These are 
 - **2026-06-08:** OG image is a static asset at `/public/og-image.jpg`. Per-post pages override with `heroImage` if present, falling back to the default. `og:site_name` added as a direct commit to main after PR #15.
 - **2026-06-08:** `BaseHead.astro` is the correct place for all head metadata — not `BaseLayout.astro`, which is a bare shell. Adding tags to `BaseLayout` would create duplicates.
 - **2026-06-08:** Beehiiv embed uses `is:inline` on both script tags so Astro doesn't bundle them; the loader injects the widget adjacent to the script tag. Styling is limited to the container (iframe boundary); tweak the widget's appearance in the Beehiiv dashboard.
+- **2026-06-08:** `/message-sent` success page has no nav link — the page is only meaningful post-submission and shouldn't be reachable through normal navigation.
+- **2026-06-08:** Web3Forms redirect is a hidden `name="redirect"` input; no JS needed, works with the static POST to the Web3Forms endpoint.
+- **2026-06-08:** Orange-rule divs on Contact and Genres were explicit page-level elements (not shared component), so removal was surgical — no layout changes.
 - **2026-06-08:** Contact form uses Web3Forms (no server, no backend — pure HTML POST to Web3Forms endpoint). Chose it over a custom API route to keep the site fully static on Cloudflare Pages.
 - **2026-06-08:** Remote branch cleanup is now a manual step after every API merge (`gh api repos/tripdog/music-blog/git/refs/heads/<branch> -X DELETE`). API merge does not auto-delete like `gh pr merge --delete-branch`.
 - **2026-06-07:** Media embeds shipped as a UNIVERSAL capability (PR #8), explicitly separated from the roundup post format. Any post can embed Apple Music / YouTube via components in an `.mdx` body. No schema change, no new post type. The roundup format (optional rating, `format` flag, pills) is a separate, parked item under Next up.
