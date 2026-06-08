@@ -13,8 +13,6 @@ const canonicalURL = new URL('/contact', Astro.site).href;
 >
   <Masthead />
 
-  <div class="contact-orange-rule"></div>
-
   <main class="contact">
 
     <!-- Hero -->
@@ -46,6 +44,7 @@ const canonicalURL = new URL('/contact', Astro.site).href;
             <input type="hidden" name="access_key" value="e7711767-401b-463e-affe-1cc0b1275f1f" />
             <input type="hidden" name="subject" value="Signal & Noise — Contact Form" />
             <input type="hidden" name="to" value="tom@atomicpx.com" />
+            <input type="hidden" name="redirect" value="https://signal-n-noise.com/message-sent" />
 
             <div class="contact-form__row">
               <div class="contact-form__field">
@@ -156,12 +155,6 @@ const canonicalURL = new URL('/contact', Astro.site).href;
 </BaseLayout>
 
 <style>
-  .contact-orange-rule {
-    height: 8px;
-    background: var(--color-orange);
-    width: 100%;
-  }
-
   .contact {
     background: var(--color-bg);
   }
