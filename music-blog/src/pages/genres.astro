@@ -26,11 +26,13 @@ const genres = GENRE_META.map((g) => {
 });
 
 const keepReading = allPosts.slice(0, 2);
+const canonicalURL = new URL('/genres', Astro.site).href;
 ---
 
 <BaseLayout
   title="Genres — Signal & Noise"
   description="The musical galaxy is big. These are the corners of it I keep coming back to."
+  canonicalURL={canonicalURL}
 >
   <Masthead />
 

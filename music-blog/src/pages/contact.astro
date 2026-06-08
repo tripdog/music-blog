@@ -2,9 +2,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Masthead from '../components/Masthead.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+
+const canonicalURL = new URL('/contact', Astro.site).href;
 ---
 
-<BaseLayout title="Contact — Signal & Noise" description="Get in touch with Signal & Noise.">
+<BaseLayout
+  title="Contact — Signal & Noise"
+  description="Send a message, argue about a review, or just say hello. Find Signal & Noise on Mastodon, Bluesky, Instagram, and more."
+  canonicalURL={canonicalURL}
+>
   <Masthead />
 
   <div class="contact-orange-rule"></div>

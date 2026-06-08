@@ -47,9 +47,17 @@ const related = allPosts
   .filter((p) => p.id !== entry.id)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 2);
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = entry.data.heroImage ?? '/og-image.jpg';
 ---
 
-<BaseLayout title={`${entry.data.title} — Signal & Noise`} description={entry.data.description}>
+<BaseLayout
+  title={`${entry.data.title} — Signal & Noise`}
+  description={entry.data.description}
+  canonicalURL={canonicalURL}
+  image={ogImage}
+>
   <Masthead />
 
   {heroImage && (

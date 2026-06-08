@@ -6,6 +6,9 @@ import PostCard from '../components/PostCard.astro';
 import NewsletterSection from '../components/NewsletterSection.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SkullMark from '../components/SkullMark.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+const canonicalURL = new URL('/', Astro.site).href;
 
 const allPosts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -23,7 +26,7 @@ const featuredDate = featured?.data.pubDate.toLocaleDateString('en-US', {
 const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
 ---
 
-<BaseLayout>
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} canonicalURL={canonicalURL}>
   <Masthead />
 
   <main>
