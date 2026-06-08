@@ -1,6 +1,6 @@
 # Signal & Noise: Project TODO
 
-*Last updated: 2026-06-07 (media embeds shipped, PR #8; capability split from the roundup format)*
+*Last updated: 2026-06-08 (housekeeping ticks; added SEO & Meta and Content next-up items)*
 
 Working doc for the Astro music blog. Grouped by effort and dependencies.
 
@@ -39,6 +39,28 @@ Reality check vs. the original plan: the first plan assumed a shared layout foot
 - [x] Orange background on "how it works" (token-driven; eyebrow/heading/body flipped for contrast; eyebrow set to white as a deliberate call)
 - [x] **CORRECTION:** this PR was NOT merged on 6-05, despite the old entry once claiming "merged + deployed." It sat OPEN until 6-06. The "byline regression" chased during the sticky-footer work was actually this fix never having shipped at all (production was serving the un-fixed page). Now merged, squashed as `b595440`.
 
+### Beehiiv newsletter embed (PR #13, merged 2026-06-08, `e49d215`)
+
+- [x] Replaced static `<form>` + dead submit handler in `NewsletterSection.astro` with the live Beehiiv embed scripts (`loader.js` + `attribution.js`), using `is:inline` so Astro doesn't bundle them.
+- [x] Removed all `.newsletter__form`, `.newsletter__input`, `.newsletter__btn` styles. Added `.newsletter__embed` container with matching width/responsive behaviour.
+- [x] Added `:global()` CSS to constrain the injected iframe to `max-width: 100%` and `background: transparent`.
+- [x] Footer has no newsletter signup — no footer changes needed.
+- [x] Stale remote branches (`emdash/build-contact-page-xiz82`, `emdash/genres-landingpage-build-o9yvy`, `emdash/connect-newsletter-form-tbkfq`) deleted via API after merge.
+
+### Contact page (PR #12, merged 2026-06-08)
+
+- [x] `/contact` page with Web3Forms-powered email form, social icon links, and nav link added to Header.
+- [x] Nav link wired in both desktop and mobile nav.
+
+### Homepage post card grid gutter (PR #11, merged 2026-06-08)
+
+- [x] Added 20px gutter to the homepage post card grid.
+
+### Genres landing page (PR #10, merged 2026-06-08)
+
+- [x] `/genres` page listing all genre categories with post counts.
+- [x] Genres link added to nav.
+
 ### Latest + Archive feature (PR #6, merged 2026-06-06, `e11c1af`)
 
 - [x] `getAllPosts()` helper in `src/lib/posts.ts` (blog collection, sorted by `pubDate` descending)
@@ -51,6 +73,16 @@ Reality check vs. the original plan: the first plan assumed a shared layout foot
 -----
 
 ## Next up
+
+### SEO & Meta
+
+- [ ] **Open Graph tags.** Add `og:title`, `og:description`, `og:image`, `og:url` to `BaseHead.astro`. Needs a default fallback image for pages without a feature image, and per-post values pulled from frontmatter on post pages.
+- [ ] **Audit meta descriptions.** Confirm each page (home, about, archive, genres, contact, post pages) has a unique `<meta name="description">` tag; add where missing.
+- [ ] **Favicon.** Asset is ready to drop in; add to `/public` and wire into `BaseLayout.astro`.
+
+### Content
+
+- [ ] **Write new posts.** Need at least one post per genre category to populate the genres landing page. Current featured post is the model. Goal: one solid review per genre before treating the blog as live.
 
 ### Roundup post format (PARKED: build only when you want LFAT-style roundups)
 
@@ -66,33 +98,30 @@ Revisit a separate post type only if the roundup series grows its own identity (
 
 ### Blocked on input
 
-- [ ] **Feature 1: Beehiiv subscribe wiring.** Need the embed snippet (or API key) and which publication/list.
-- [ ] **Feature 2: Missing feature-article images.** Need the article title (got cut off originally) and the assets, or a green light to generate in the no-text mid-century style.
+- [ ] **Feature: Missing feature-article images.** Need the article title (got cut off originally) and the assets, or a green light to generate in the no-text mid-century style.
 
 ### Deferred / needs design
 
-- [ ] **Build 1: Contact page.** Cleaner after the Beehiiv/email decision since the form approach overlaps.
-- [ ] **Build 2: Genres landing page.** Starter section ideas:
-1. Genre grid (Punk, Reggae, Metal, Goth, Other) with post counts
-1. Short editorial intro per genre in your voice
-1. Gateway/"start here" records per genre
-1. Latest post per genre on each card
-1. "Never got their fair hearing" cross-genre rail of underrated picks (ties to About copy)
+- [ ] **Genres landing page: enrich per-genre cards.** The page shipped with genre list + post counts (#10). Potential next layers:
+  1. Short editorial intro per genre in your voice
+  1. Gateway/"start here" records per genre
+  1. Latest post per genre on each card
+  1. "Never got their fair hearing" cross-genre rail of underrated picks (ties to About copy)
 
 -----
 
 ## Small polish (low priority)
 
-- [ ] Archive hero h1 currently reads "Every post, newest first." Consider a voicier rewrite to match the About hero.
-- [ ] Confirm the archive date format (`Jan 12, 2026`) matches how dates render on individual post pages.
+- [x] Archive hero copy — keeping "Every post, newest first." as-is, no change needed.
+- [x] Archive date format confirmed consistent with post pages.
 
 -----
 
 ## Housekeeping debt
 
-- [ ] **`/blog` route cleanup.** `blog/index.astro` is a leftover Astro starter page: its own `<html>`/`<body>` shell, the old Header/Footer components, not on the design system at all, currently live at `/blog`. Replace it with a redirect `/blog` to `/archive` (one line in `astro.config` redirects), since `/archive` serves the same purpose. Do NOT just delete it (that leaves `/blog` as a 404). This is a small, ready-to-do task whenever.
-- [ ] **Retire spent worktrees + remote branches.** Three Emdash worktrees have done their job and can be retired: `archive-page` (PR #6), `sticky-footer` (PR #7), `media-embeds` (PR #8). Also delete their remote branches if the API merges left them behind (the API merge does not auto-delete, unlike `gh pr merge --delete-branch`). Check with `gh api repos/tripdog/music-blog/git/refs/heads` or the GitHub branches page.
-- [ ] **Stale `implement-homepage-design` worktree:** 8 uncommitted leftover files (settings.local.json, Masthead.astro, [...slug].astro, index.astro, global.css, plus SVGs/components). Decide keep vs. discard, then clean up. (The settings.local.json part is now covered by the `.gitignore` going forward, but these specific leftovers still need a call.)
+- [x] **`/blog` route cleanup.** Redirects `/blog` to `/archive` via `astro.config.mjs`. Stale starter page deleted. (PR #9, merged 2026-06-07)
+- [x] **Retire spent remote branches.** All merged emdash branches deleted via `gh api … -X DELETE` after each PR merge. `main` is the only branch on remote as of 2026-06-08.
+- [x] **Stale `implement-homepage-design` worktree** — resolved, clean.
 
 -----
 
@@ -112,6 +141,9 @@ That session burned a lot of cycles on worktree and branch confusion. These are 
 
 ## Decisions log
 
+- **2026-06-08:** Beehiiv embed uses `is:inline` on both script tags so Astro doesn't bundle them; the loader injects the widget adjacent to the script tag. Styling is limited to the container (iframe boundary); tweak the widget's appearance in the Beehiiv dashboard.
+- **2026-06-08:** Contact form uses Web3Forms (no server, no backend — pure HTML POST to Web3Forms endpoint). Chose it over a custom API route to keep the site fully static on Cloudflare Pages.
+- **2026-06-08:** Remote branch cleanup is now a manual step after every API merge (`gh api repos/tripdog/music-blog/git/refs/heads/<branch> -X DELETE`). API merge does not auto-delete like `gh pr merge --delete-branch`.
 - **2026-06-07:** Media embeds shipped as a UNIVERSAL capability (PR #8), explicitly separated from the roundup post format. Any post can embed Apple Music / YouTube via components in an `.mdx` body. No schema change, no new post type. The roundup format (optional rating, `format` flag, pills) is a separate, parked item under Next up.
 - **2026-06-07:** MDX and the `{md,mdx}` collection glob were already configured; the planned "enable MDX" step was a no-op.
 - **2026-06-07:** Embed spacing handled by a general `.post-prose > :global(*) { margin-bottom: 1.5rem }` rule (direct-child scoped), not per-component margins. Root cause was flush siblings, not a height collapse. One rule spaces all current and future embeds + content.
