@@ -1,6 +1,6 @@
 # Signal & Noise: Project TODO
 
-*Last updated: 2026-06-08 (housekeeping ticks; added SEO & Meta and Content next-up items)*
+*Last updated: 2026-06-08 (favicon, OG tags, and meta descriptions shipped; decisions log updated)*
 
 Working doc for the Astro music blog. Grouped by effort and dependencies.
 
@@ -39,6 +39,17 @@ Reality check vs. the original plan: the first plan assumed a shared layout foot
 - [x] Orange background on "how it works" (token-driven; eyebrow/heading/body flipped for contrast; eyebrow set to white as a deliberate call)
 - [x] **CORRECTION:** this PR was NOT merged on 6-05, despite the old entry once claiming "merged + deployed." It sat OPEN until 6-06. The "byline regression" chased during the sticky-footer work was actually this fix never having shipped at all (production was serving the un-fixed page). Now merged, squashed as `b595440`.
 
+### Favicon (PR #14, merged 2026-06-08)
+
+- [x] All favicon files (ICO, PNG sizes, apple-touch-icon, android-chrome, site.webmanifest) copied to `/public` and wired into `BaseHead.astro`.
+
+### Open Graph tags + meta description audit (PR #15, merged 2026-06-08)
+
+- [x] `og:type`, `og:title`, `og:description`, `og:image`, `og:url`, and `twitter:card` added to `BaseHead.astro`. Default OG image at `/public/og-image.jpg` (committed directly to main after PR #15 merged).
+- [x] Per-post pages override `og:image` with `heroImage` if present, falling back to `/og-image.jpg`. Wired in `[...slug].astro`.
+- [x] `canonicalURL` prop added to `BaseHead` and forwarded through `BaseLayout`; each page computes and passes its own canonical URL explicitly.
+- [x] All 6 pages (index, about, archive, genres, contact, `[...slug]`) now pass unique, explicit descriptions to `BaseHead`. Generic placeholder descriptions on `about` and `contact` replaced.
+
 ### Beehiiv newsletter embed (PR #13, merged 2026-06-08, `e49d215`)
 
 - [x] Replaced static `<form>` + dead submit handler in `NewsletterSection.astro` with the live Beehiiv embed scripts (`loader.js` + `attribution.js`), using `is:inline` so Astro doesn't bundle them.
@@ -73,12 +84,6 @@ Reality check vs. the original plan: the first plan assumed a shared layout foot
 -----
 
 ## Next up
-
-### SEO & Meta
-
-- [ ] **Open Graph tags.** Add `og:title`, `og:description`, `og:image`, `og:url` to `BaseHead.astro`. Needs a default fallback image for pages without a feature image, and per-post values pulled from frontmatter on post pages.
-- [ ] **Audit meta descriptions.** Confirm each page (home, about, archive, genres, contact, post pages) has a unique `<meta name="description">` tag; add where missing.
-- [ ] **Favicon.** Asset is ready to drop in; add to `/public` and wire into `BaseLayout.astro`.
 
 ### Content
 
@@ -141,6 +146,8 @@ That session burned a lot of cycles on worktree and branch confusion. These are 
 
 ## Decisions log
 
+- **2026-06-08:** OG image is a static asset at `/public/og-image.jpg`. Per-post pages override with `heroImage` if present, falling back to the default. `og:site_name` added as a direct commit to main after PR #15.
+- **2026-06-08:** `BaseHead.astro` is the correct place for all head metadata — not `BaseLayout.astro`, which is a bare shell. Adding tags to `BaseLayout` would create duplicates.
 - **2026-06-08:** Beehiiv embed uses `is:inline` on both script tags so Astro doesn't bundle them; the loader injects the widget adjacent to the script tag. Styling is limited to the container (iframe boundary); tweak the widget's appearance in the Beehiiv dashboard.
 - **2026-06-08:** Contact form uses Web3Forms (no server, no backend — pure HTML POST to Web3Forms endpoint). Chose it over a custom API route to keep the site fully static on Cloudflare Pages.
 - **2026-06-08:** Remote branch cleanup is now a manual step after every API merge (`gh api repos/tripdog/music-blog/git/refs/heads/<branch> -X DELETE`). API merge does not auto-delete like `gh pr merge --delete-branch`.
