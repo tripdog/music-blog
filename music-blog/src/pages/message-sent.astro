@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Masthead from '../components/Masthead.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+const canonicalURL = new URL('/message-sent', Astro.site).href;
+---
+
+<BaseLayout
+  title="Message sent — Signal & Noise"
+  description="Your message landed. We'll be in touch soon."
+  canonicalURL={canonicalURL}
+>
+  <Masthead />
+
+  <main class="success">
+    <section class="success-hero">
+      <div class="success__inner">
+        <p class="success__eyebrow">MESSAGE SENT</p>
+        <h1 class="success-hero__heading">
+          Boom<span style="color: var(--color-orange)">!</span> Got it<span style="color: var(--color-orange)">.</span>
+        </h1>
+        <div class="success-hero__rule"></div>
+        <p class="success-hero__sub">
+          Your message landed. I'll get back to you soon — in the meantime, go listen to something good.
+        </p>
+        <a href="/archive" class="success-cta">BACK TO THE ARCHIVE →</a>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
+
+<style>
+  .success {
+    background: var(--color-bg);
+  }
+
+  .success__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+
+  .success__eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .success-hero {
+    padding-top: 64px;
+    padding-bottom: 96px;
+  }
+
+  .success-hero__heading {
+    font-size: clamp(56px, 9vw, 96px);
+    font-weight: 900;
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    color: var(--color-ink);
+    margin-bottom: 32px;
+  }
+
+  .success-hero__rule {
+    height: 8px;
+    background: var(--color-ink);
+    margin-bottom: 28px;
+  }
+
+  .success-hero__sub {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.35;
+    color: var(--color-ink);
+    max-width: 820px;
+    margin-bottom: 48px;
+  }
+
+  .success-cta {
+    display: inline-block;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--color-bg);
+    background: var(--color-orange);
+    border-radius: 2px;
+    padding: 14px 28px;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .success-cta:hover {
+    opacity: 0.85;
+  }
+
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .success__inner {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .success__inner {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    .success-hero__sub {
+      font-size: 19px;
+    }
+
+    .success-hero {
+      padding-bottom: 56px;
+    }
+  }
+</style>
