@@ -6,9 +6,16 @@ import { ClientRouter } from 'astro:transitions';
 interface Props {
   title?: string;
   description?: string;
+  canonicalURL?: string;
+  image?: string;
 }
 
-const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
+const {
+  title = SITE_TITLE,
+  description = SITE_DESCRIPTION,
+  canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
+  image,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -20,7 +27,7 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
     document.documentElement.setAttribute('data-theme', theme);
   })();
   </script>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={title} description={description} canonicalURL={canonicalURL} image={image} />
     <ClientRouter />
   </head>
   <body>

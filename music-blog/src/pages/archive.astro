@@ -5,13 +5,18 @@ import SiteFooter from '../components/SiteFooter.astro';
 import { getAllPosts } from '../lib/posts';
 
 const posts = await getAllPosts();
+const canonicalURL = new URL('/archive', Astro.site).href;
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 ---
 
-<BaseLayout title="Archive — Signal & Noise" description="Every post on Signal & Noise, newest first.">
+<BaseLayout
+  title="Archive — Signal & Noise"
+  description="Every review, essay, and rant from Signal & Noise, newest first."
+  canonicalURL={canonicalURL}
+>
   <Masthead />
 
   <main class="archive">

@@ -4,9 +4,14 @@ import Masthead from '../components/Masthead.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 
 const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
+const canonicalURL = new URL('/about', Astro.site).href;
 ---
 
-<BaseLayout title="About — Signal & Noise" description="About Signal & Noise, a music blog by Tom Phillips.">
+<BaseLayout
+  title="About — Signal & Noise"
+  description="Tom Phillips writes about music from San Diego — new records, old records, live shows, and the bands the algorithm never found."
+  canonicalURL={canonicalURL}
+>
   <Masthead />
 
   <main class="about">
