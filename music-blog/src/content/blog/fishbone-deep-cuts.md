@@ -7,7 +7,7 @@ featured: true
 rating: 5
 verdict: 'A monument to what happens when a band refuses to be one thing. Essential.'
 lede: 'A genre-resistant Black band from Los Angeles spent two decades being too punk for funk, too funk for punk, and too good for either to ignore. A look back at the records, the live shows, and the institutional failure to give them their due.'
-heroImage: '/images/fishbone-hero.jpg'
+heroImage: '/images/fishbone-hero.webp'
 albumArt: '/images/fishbone-truth-and-soul.jpg'
 ---
 

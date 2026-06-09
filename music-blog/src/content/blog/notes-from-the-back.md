@@ -1,10 +1,10 @@
 ---
 title: 'Notes from the back of the room'
-description: 'Three shows at small venues in San Diego. What worked. What didn\'t. Why the small room still matters.'
+description: "Three shows at small venues in San Diego. What worked. What didn't. Why the small room still matters."
 pubDate: 'Jun 09 2026'
 category: 'Live'
 featured: false
-lede: 'Three shows at small venues in San Diego. What worked. What didn\'t. Why the small room still matters.'
+lede: "Three shows at small venues in San Diego. What worked. What didn't. Why the small room still matters."
 heroImage: '/images/notes-from-back-hero.jpg'
 ---
 
