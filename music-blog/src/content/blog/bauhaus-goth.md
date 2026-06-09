@@ -2,6 +2,7 @@
 title: "Bauhaus weren't a goth band. Discuss."
 description: 'The band that supposedly invented goth spent most of their career trying to escape the label. A closer listen to what they actually made suggests the category always fit badly - and that the music is stranger and better for it.'
 pubDate: 'Jun 09 2026'
+order: 2
 category: 'Goth'
 featured: true
 lede: 'The band that supposedly invented goth spent most of their career trying to escape the label. A closer listen to what they actually made suggests the category always fit badly - and that the music is stranger and better for it.'

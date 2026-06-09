@@ -1,7 +1,8 @@
 ---
 title: 'Notes from the back of the room'
 description: "Three shows at small venues in San Diego. What worked. What didn't. Why the small room still matters."
-pubDate: 'Jun 09 2026'
+pubDate: 'Jun 06 2026'
+order: 7
 category: 'Live'
 featured: false
 lede: "Three shows at small venues in San Diego. What worked. What didn't. Why the small room still matters."

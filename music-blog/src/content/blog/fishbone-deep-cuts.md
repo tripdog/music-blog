@@ -2,6 +2,7 @@
 title: 'Why Fishbone deserved more than they got'
 description: 'A genre-resistant Black band from Los Angeles spent two decades being too punk for funk, too funk for punk, and too good for either to ignore. A look back at the records, the live shows, and the institutional failure to give them their due.'
 pubDate: 'Jun 09 2026'
+order: 1
 category: 'Deep Cuts'
 featured: true
 rating: 5

@@ -1,7 +1,8 @@
 ---
 title: 'Before CBGB, before the Ramones, before any of it - there was Death.'
 description: "Three brothers from Detroit recorded a punk album in 1974. The Ramones were still two years away. Nobody released it. The story of Death is about more than being first - it's about who gets written out of history and why."
-pubDate: 'Jun 09 2026'
+pubDate: 'Jun 07 2026'
+order: 5
 category: 'Punk'
 featured: true
 rating: 4.5
