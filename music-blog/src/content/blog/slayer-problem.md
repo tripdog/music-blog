@@ -1,7 +1,8 @@
 ---
 title: 'The Slayer problem: too fast to be canonical, too good to ignore.'
 description: "Show No Mercy through Seasons in the Abyss is one of the great five-album runs in metal history. That it doesn't get mentioned alongside the foundational runs of Sabbath, Metallica, and Maiden says more about how we talk about speed than about the records themselves."
-pubDate: 'Jun 09 2026'
+pubDate: 'Jun 08 2026'
+order: 3
 category: 'Metal'
 featured: true
 rating: 5

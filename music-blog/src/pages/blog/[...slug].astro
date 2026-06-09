@@ -62,7 +62,7 @@ const ogImage = entry.data.heroImage ?? '/og-image.jpg';
 
   {heroImage && (
     <div class="post-hero-img">
-      <img src={heroImage} alt="" class="post-hero-img__img" />
+      <img src={heroImage} alt="" class="post-hero-img__img" onerror="this.closest('.post-hero-img').remove()" />
     </div>
   )}
 
