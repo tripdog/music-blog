@@ -1,12 +1,12 @@
 ---
 title: 'The Slayer problem: too fast to be canonical, too good to ignore.'
-description: 'Show No Mercy through Seasons in the Abyss is one of the great five-album runs in metal history. That it doesn't get mentioned alongside the foundational runs of Sabbath, Metallica, and Maiden says more about how we talk about speed than about the records themselves.'
+description: "Show No Mercy through Seasons in the Abyss is one of the great five-album runs in metal history. That it doesn't get mentioned alongside the foundational runs of Sabbath, Metallica, and Maiden says more about how we talk about speed than about the records themselves."
 pubDate: 'Jun 09 2026'
 category: 'Metal'
 featured: true
 rating: 5
 verdict: 'Five essential metal records that rewrote what the genre could do. The canonical conversation needs to catch up.'
-lede: 'Show No Mercy through Seasons in the Abyss is one of the great five-album runs in metal history. That it doesn't get mentioned alongside Sabbath, Metallica, and Maiden says more about how we talk about speed than about the records themselves.'
+lede: "Show No Mercy through Seasons in the Abyss is one of the great five-album runs in metal history. That it doesn't get mentioned alongside Sabbath, Metallica, and Maiden says more about how we talk about speed than about the records themselves."
 heroImage: '/images/slayer-hero.jpg'
 albumArt: '/images/slayer-reign-in-blood.jpg'
 ---

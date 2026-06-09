@@ -1,6 +1,6 @@
 ---
-title: 'Three records that don't sound like 1989'
-description: 'A small pile of new releases that prove there\'s still original work happening in genres people declared dead a decade ago. Disintegration, Doolittle, Technique - the year the mainstream zigged and three bands zagged.'
+title: "Three records that don't sound like 1989"
+description: "A small pile of new releases that prove there's still original work happening in genres people declared dead a decade ago. Disintegration, Doolittle, Technique - the year the mainstream zigged and three bands zagged."
 pubDate: 'Jun 09 2026'
 category: 'Deep Cuts'
 featured: false

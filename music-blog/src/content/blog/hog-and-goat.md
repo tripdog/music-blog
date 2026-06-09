@@ -1,12 +1,12 @@
 ---
-title: 'Hog & Goat is the roots reggae record that should've changed everything'
-description: 'Don Carlos had the voice, the material, and the timing. Released in 1981, Hog & Goat is one of the warmest and most fully realized roots reggae records ever cut. The audience just wasn't paying attention.'
+title: "Hog & Goat is the roots reggae record that should've changed everything"
+description: "Don Carlos had the voice, the material, and the timing. Released in 1981, Hog & Goat is one of the warmest and most fully realized roots reggae records ever cut. The audience just wasn't paying attention."
 pubDate: 'Jun 09 2026'
 category: 'Reggae'
 featured: true
 rating: 5
-verdict: 'One of the warmest, most fully realized roots reggae records ever cut. The audience just wasn't paying attention.'
-lede: 'Don Carlos had the voice, the material, and the timing. Released in 1981, Hog & Goat is one of the warmest and most fully realized roots reggae records ever cut. The audience just wasn't paying attention.'
+verdict: "One of the warmest, most fully realized roots reggae records ever cut. The audience just wasn't paying attention."
+lede: "Don Carlos had the voice, the material, and the timing. Released in 1981, Hog & Goat is one of the warmest and most fully realized roots reggae records ever cut. The audience just wasn't paying attention."
 heroImage: '/images/hog-and-goat-hero.jpg'
 albumArt: '/images/hog-and-goat-album.jpg'
 ---
