@@ -117,6 +117,17 @@ const ogImage = entry.data.heroImage ?? '/og-image.jpg';
       </div>
     )}
 
+    {albumArt && (
+      <img
+        src={albumArt}
+        alt=""
+        class="post-album-art"
+        width="160"
+        height="160"
+        onerror="this.remove()"
+      />
+    )}
+
     <div class="post-prose">
       <Content />
     </div>
@@ -131,38 +142,31 @@ const ogImage = entry.data.heroImage ?? '/og-image.jpg';
       </p>
     </div>
 
-    {(albumArt || rating !== undefined) && (
+    {rating !== undefined && (
       <div class="post-verdict">
-        {albumArt && (
-          <img src={albumArt} alt="" class="post-verdict__album-art" width="160" height="160" />
-        )}
         <div class="post-verdict__rule"></div>
-        {rating !== undefined && (
-          <>
-            <p class="post-verdict__label">FINAL VERDICT</p>
-            <div class="post-verdict__skulls">
-              {Array.from({ length: 5 }, (_, i) => {
-                const isFull = i < floorRating;
-                const isEmpty = !isFull;
-                const wrapWidth = SKULL_VDT_W;
-                return (
-                  <span class="skull-clip" style={`width:${wrapWidth}px`}>
-                    <img
-                      src="/skull-bone.svg"
-                      class="skull-icon"
-                      width={SKULL_VDT_W}
-                      height={SKULL_VDT_H}
-                      alt=""
-                      style={isEmpty ? 'opacity:0.15' : ''}
-                    />
-                  </span>
-                );
-              })}
-              <span class="post-verdict__score">{rating.toFixed(2)} / 5</span>
-            </div>
-            {verdict && <p class="post-verdict__blurb">{verdict}</p>}
-          </>
-        )}
+        <p class="post-verdict__label">FINAL VERDICT</p>
+        <div class="post-verdict__skulls">
+          {Array.from({ length: 5 }, (_, i) => {
+            const isFull = i < floorRating;
+            const isEmpty = !isFull;
+            const wrapWidth = SKULL_VDT_W;
+            return (
+              <span class="skull-clip" style={`width:${wrapWidth}px`}>
+                <img
+                  src="/skull-bone.svg"
+                  class="skull-icon"
+                  width={SKULL_VDT_W}
+                  height={SKULL_VDT_H}
+                  alt=""
+                  style={isEmpty ? 'opacity:0.15' : ''}
+                />
+              </span>
+            );
+          })}
+          <span class="post-verdict__score">{rating.toFixed(2)} / 5</span>
+        </div>
+        {verdict && <p class="post-verdict__blurb">{verdict}</p>}
       </div>
     )}
   </main>
@@ -493,20 +497,21 @@ const ogImage = entry.data.heroImage ?? '/og-image.jpg';
     opacity: 0.8;
   }
 
-  /* ── Final verdict ── */
-  .post-verdict {
-    max-width: 720px;
-    margin-top: 56px;
-    overflow: hidden;
-  }
-
-  .post-verdict__album-art {
+  /* ── Album art (top of article) ── */
+  .post-album-art {
     float: right;
     width: 160px;
     height: 160px;
     object-fit: cover;
     margin-left: 24px;
     margin-bottom: 16px;
+    margin-top: 4px;
+  }
+
+  /* ── Final verdict ── */
+  .post-verdict {
+    max-width: 720px;
+    margin-top: 56px;
   }
 
   .post-verdict__rule {
@@ -680,10 +685,10 @@ const ogImage = entry.data.heroImage ?? '/og-image.jpg';
       margin-top: 32px;
     }
 
-    .post-verdict__album-art {
+    .post-album-art {
       float: none;
       width: 100%;
-      height: 240px;
+      height: 200px;
       margin-left: 0;
       margin-bottom: 16px;
     }
