@@ -14,5 +14,5 @@ export async function getAllPosts() {
 
 export async function getLatestPost() {
 	const posts = await getAllPosts();
-	return posts.find((p) => p.data.featured === true);
+	return posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())[0];
 }

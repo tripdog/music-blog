@@ -19,10 +19,10 @@ const allPosts = (await getCollection('blog')).sort((a, b) => {
   return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
 });
 
-const featured = allPosts.find((p) => p.data.featured) ?? allPosts[0];
-const gridPosts = allPosts.filter((p) => p.id !== featured?.id).slice(0, 3);
+const latestPost = [...allPosts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())[0];
+const gridPosts = allPosts.filter((p) => p.id !== latestPost?.id).slice(0, 3);
 
-const featuredDate = featured?.data.pubDate.toLocaleDateString('en-US', {
+const latestDate = latestPost?.data.pubDate.toLocaleDateString('en-US', {
   month: 'short',
   day: 'numeric',
   year: 'numeric',
@@ -64,18 +64,18 @@ const GENRES = ['PUNK', 'REGGAE', 'METAL', 'GOTH', 'OTHER'];
         <h2 class="latest__heading">latest.</h2>
         <div class="latest__rule"></div>
 
-        <!-- Featured post -->
-        {featured && (
+        <!-- Latest post -->
+        {latestPost && (
           <article class="featured-post">
             <p class="featured-post__meta">
-              FEATURED
-              {featured.data.category && ` · ${featured.data.category.toUpperCase()}`}
-              {` · ${featuredDate}`}
+              LATEST
+              {latestPost.data.category && ` · ${latestPost.data.category.toUpperCase()}`}
+              {` · ${latestDate}`}
             </p>
             <h3 class="featured-post__title">
-              <a href={`/blog/${featured.id}`}>{featured.data.title}</a>
+              <a href={`/blog/${latestPost.id}`}>{latestPost.data.title}</a>
             </h3>
-            <p class="featured-post__excerpt">{featured.data.description}</p>
+            <p class="featured-post__excerpt">{latestPost.data.description}</p>
           </article>
         )}
 

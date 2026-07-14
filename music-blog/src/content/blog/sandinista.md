@@ -1,9 +1,10 @@
 ---
 title: "Sandinista!"
 description: "The Clash's most ambitious record is also my favorite. Here's why I think history has finally caught up with it."
-pubDate: 2026-07-14
-heroImage: "/images/sandinista.jpg"
-category: "Featured"
+pubDate: "2026-07-14T12:00:00-07:00"
+heroImage: "/images/clash-banner.jpg"
+albumArt: "/images/sandinista.jpg"
+category: "Punk"
 tags:
   - The Clash
   - Punk
@@ -12,7 +13,7 @@ tags:
   - Dub
   - Album Deep Dive
 draft: false
-featured: true
+featured: false
 ---
 
 I am going to say something that will get me politely escorted out of certain record-store conversations:
