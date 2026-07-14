@@ -81,7 +81,9 @@ const canonicalURL = new URL('/about', Astro.site).href;
 <style>
   /* ---- Shared ---- */
   .about {
-    background: var(--color-bg); + display: flex; + flex-direction: column;
+    background: var(--color-bg);
+    display: flex;
+    flex-direction: column;
   }
 
   .about__inner {
@@ -202,7 +204,8 @@ const canonicalURL = new URL('/about', Astro.site).href;
 
   /* ---- Principles (inverted) ---- */
   .about-principles {
-  background: var(--color-orange); - margin-top: 16px; + margin-top: auto;
+    background: var(--color-orange);
+    margin-top: auto;
   }
 
   .about-principles__inner {
