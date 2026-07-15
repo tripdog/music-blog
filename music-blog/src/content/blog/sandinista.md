@@ -20,7 +20,7 @@ I am going to say something that will get me politely escorted out of certain re
 
 *Sandinista!* is my favorite Clash record.
 
-Not only is it my favorite Clash record, ...it is their best record. Objectively. Scientifically. Peer reviewed by the imaginary academy of people who own too many records and have opinions about bass tones. I will fight you on this.
+Not only is it my favorite Clash record, it is their best record. Objectively. Scientifically. Peer reviewed by the imaginary academy of people who own too many records and have opinions about bass tones. I will fight you on this.
 
 Just kidding. Mostly.
 
